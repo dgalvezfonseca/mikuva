@@ -129,7 +129,6 @@ async function createCheckoutPreferenceLocked(orderId: number) {
     })),
     folio: order.folio,
     origin: appOrigin,
-    webhookUrl: new URL("/api/webhooks/mercadopago", `${appOrigin}/`).toString(),
   });
 
   try {

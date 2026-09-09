@@ -9,7 +9,6 @@ type CheckoutProPreferenceInput = {
   items: CheckoutProItem[];
   folio: string;
   origin: string;
-  webhookUrl: string;
 };
 
 export type MercadoPagoEnvironment = "test" | "production";
@@ -44,8 +43,6 @@ export function buildCheckoutProPreference(input: CheckoutProPreferenceInput) {
     throw new Error("Checkout Pro preference data is invalid.");
   }
   const origin = trustedHttpsUrl(input.origin, "APP_URL").origin;
-  const webhookUrl = trustedHttpsUrl(input.webhookUrl, "Webhook URL");
-  if (webhookUrl.origin !== origin) throw new Error("Webhook URL must use APP_URL.");
 
   return {
     items: input.items.map((item) => {
@@ -72,7 +69,6 @@ export function buildCheckoutProPreference(input: CheckoutProPreferenceInput) {
       failure: `${origin}/pago/error`,
     },
     auto_return: "approved" as const,
-    notification_url: webhookUrl.toString(),
   };
 }
 

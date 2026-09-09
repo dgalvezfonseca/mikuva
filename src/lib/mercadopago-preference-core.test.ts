@@ -12,7 +12,6 @@ describe("Checkout Pro preference", () => {
     items: [{ id: "1", title: "DigitalizaciÃ³n", quantity: 2, unitPrice: 125000 }],
     folio: "MK-2026-00001",
     origin: "https://mikuva.com",
-    webhookUrl: "https://mikuva.com/api/webhooks/mercadopago",
   };
 
   test("uses only server snapshots and official callback values", () => {
@@ -27,7 +26,6 @@ describe("Checkout Pro preference", () => {
         failure: "https://mikuva.com/pago/error",
       },
       auto_return: "approved",
-      notification_url: "https://mikuva.com/api/webhooks/mercadopago",
     });
   });
 
