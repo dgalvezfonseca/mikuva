@@ -49,14 +49,15 @@ function smtpPort(): number {
   return value;
 }
 
-function smtpSecure(): boolean {
-  const value = requiredEnvironment("SMTP_SECURE").toLowerCase();
+function smtpBoolean(name: "SMTP_SECURE" | "SMTP_IGNORE_TLS"): boolean {
+  const value = requiredEnvironment(name).toLowerCase();
   if (value === "true") return true;
   if (value === "false") return false;
-  throw new Error("SMTP_SECURE must be true or false.");
+  throw new Error(`${name} must be true or false.`);
 }
 
-function getTransport(): Transporter {
+export function getSmtpTransportOptions() {
+  const host = requiredEnvironment("SMTP_HOST");
   const user = process.env["SMTP_USER"]?.trim();
   const password = process.env["SMTP_PASSWORD"]?.trim();
   if (Boolean(user) !== Boolean(password)) {
@@ -66,15 +67,25 @@ function getTransport(): Transporter {
   const from = requiredEnvironment("EMAIL_FROM");
   if (from !== EMAIL_FROM) throw new Error("EMAIL_FROM must be Mikuva <no-reply@mikuva.com>.");
 
-  return nodemailer.createTransport({
-    host: requiredEnvironment("SMTP_HOST"),
+  const ignoreTLS = smtpBoolean("SMTP_IGNORE_TLS");
+  if (ignoreTLS && !["127.0.0.1", "localhost", "::1"].includes(host.toLowerCase())) {
+    throw new Error("SMTP_IGNORE_TLS=true is only allowed for local SMTP hosts.");
+  }
+
+  return {
+    host,
     port: smtpPort(),
-    secure: smtpSecure(),
+    secure: smtpBoolean("SMTP_SECURE"),
+    ignoreTLS,
     ...(user && password ? { auth: { user, pass: password } } : {}),
     connectionTimeout: SMTP_TIMEOUT_MS,
     greetingTimeout: SMTP_TIMEOUT_MS,
     socketTimeout: SMTP_TIMEOUT_MS,
-  });
+  };
+}
+
+function getTransport(): Transporter {
+  return nodemailer.createTransport(getSmtpTransportOptions());
 }
 
 function escapeHtml(value: string): string {

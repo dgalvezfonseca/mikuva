@@ -3,6 +3,7 @@ import { test } from "node:test";
 
 import {
   buildPurchaseConfirmationEmail,
+  getSmtpTransportOptions,
   sendPurchaseConfirmationEmailForMercadoPagoPayment,
 } from "./purchase-confirmation-email.server";
 
@@ -48,6 +49,56 @@ function confirmationDependencies(input: { status?: "approved" | "pending" | "re
     },
   };
 }
+
+function withSmtpEnvironment(
+  values: Record<string, string | undefined>,
+  work: () => void,
+): void {
+  const previous = Object.fromEntries(
+    Object.keys(values).map((name) => [name, process.env[name]]),
+  );
+  try {
+    for (const [name, value] of Object.entries(values)) {
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
+    }
+    work();
+  } finally {
+    for (const [name, value] of Object.entries(previous)) {
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
+    }
+  }
+}
+
+const localSmtpEnvironment = {
+  SMTP_PORT: "25",
+  SMTP_USER: "",
+  SMTP_PASSWORD: "",
+  SMTP_SECURE: "false",
+  SMTP_IGNORE_TLS: "true",
+  EMAIL_FROM: "Mikuva <no-reply@mikuva.com>",
+};
+
+test("allows STARTTLS to be skipped for localhost without SMTP credentials", () => {
+  withSmtpEnvironment({ ...localSmtpEnvironment, SMTP_HOST: "localhost" }, () => {
+    const options = getSmtpTransportOptions();
+    assert.equal(options.ignoreTLS, true);
+    assert.equal("auth" in options, false);
+  });
+});
+
+test("allows STARTTLS to be skipped for 127.0.0.1", () => {
+  withSmtpEnvironment({ ...localSmtpEnvironment, SMTP_HOST: "127.0.0.1" }, () => {
+    assert.equal(getSmtpTransportOptions().ignoreTLS, true);
+  });
+});
+
+test("rejects skipping STARTTLS for an external SMTP host", () => {
+  withSmtpEnvironment({ ...localSmtpEnvironment, SMTP_HOST: "smtp.example.com" }, () => {
+    assert.throws(() => getSmtpTransportOptions(), /only allowed for local SMTP hosts/);
+  });
+});
 
 test("uses local order data and the required Mikuva sender", () => {
   const message = buildPurchaseConfirmationEmail(order, new Date("2026-09-09T12:00:00Z"));
