@@ -173,6 +173,7 @@ export const orders = mysqlTable(
     discount: money("discount").default(0).notNull(),
     shipping: money("shipping").default(0).notNull(),
     total: money("total").notNull(),
+    confirmationEmailSentAt: timestamp("confirmation_email_sent_at", { mode: "date", fsp: 3 }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },

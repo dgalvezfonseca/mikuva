@@ -1,0 +1,1 @@
+ALTER TABLE `orders` ADD `confirmation_email_sent_at` timestamp(3);

@@ -18,6 +18,7 @@ import {
   type MercadoPagoPayment,
 } from "@/lib/mercadopago-webhook-core";
 import { getMercadoPagoPayment } from "@/lib/mercadopago.server";
+import { sendPurchaseConfirmationEmailForMercadoPagoPayment } from "@/lib/purchase-confirmation-email.server";
 
 const SIGNATURE_TOLERANCE_SECONDS = 300;
 const MAX_WEBHOOK_BODY_BYTES = 64 * 1024;
@@ -71,6 +72,14 @@ async function recordEvent(input: {
   });
 }
 
+async function finishSynchronization(
+  paymentId: string,
+  result: SynchronizationResult,
+): Promise<SynchronizationResult> {
+  await sendPurchaseConfirmationEmailForMercadoPagoPayment(paymentId);
+  return result;
+}
+
 export async function synchronizeMercadoPagoPayment(
   notification: MercadoPagoNotification,
   payment: MercadoPagoPayment,
@@ -88,7 +97,10 @@ export async function synchronizeMercadoPagoPayment(
     .limit(1);
 
   if (alreadyProcessed) {
-    return { result: "duplicate", status: alreadyProcessed.processedStatus };
+    return finishSynchronization(payment.id, {
+      result: "duplicate",
+      status: alreadyProcessed.processedStatus,
+    });
   }
 
   if (!MIKUVA_FOLIO_PATTERN.test(payment.external_reference)) {
@@ -100,13 +112,13 @@ export async function synchronizeMercadoPagoPayment(
       });
     } catch (error) {
       if (!isDuplicateEntry(error)) throw error;
-      return { result: "duplicate", status: "already_processed" };
+      return finishSynchronization(payment.id, { result: "duplicate", status: "already_processed" });
     }
-    return { result: "rejected", status: "external_reference_mismatch" };
+    return finishSynchronization(payment.id, { result: "rejected", status: "external_reference_mismatch" });
   }
 
   try {
-    return await db.transaction(async (tx) => {
+    const result = await db.transaction(async (tx) => {
       const [duplicate] = await tx
         .select({ id: paymentEvents.id, processedStatus: paymentEvents.processedStatus })
         .from(paymentEvents)
@@ -240,8 +252,11 @@ export async function synchronizeMercadoPagoPayment(
         folio: order.folio,
       } as const;
     });
+    return finishSynchronization(payment.id, result);
   } catch (error) {
-    if (isDuplicateEntry(error)) return { result: "duplicate", status: "already_processed" };
+    if (isDuplicateEntry(error)) {
+      return finishSynchronization(payment.id, { result: "duplicate", status: "already_processed" });
+    }
     throw error;
   }
 }
