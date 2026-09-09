@@ -10,6 +10,9 @@ import {
 } from "./mercadopago-webhook-core";
 
 const paymentId = "123456789";
+const realReturnUrl = new URL(
+  "https://mikuva.com/pago/exitoso?collection_id=177184864973&collection_status=approved&payment_id=177184864973&status=approved&external_reference=MK-2026-00026&payment_type=credit_card&merchant_order_id=44338420444&preference_id=2227257877-10851809-174a-42a8-b033-a307a6647782&site_id=MLM&processing_mode=aggregator&merchant_account_id=null",
+);
 const local = {
   orderFolio: "MK-2026-00001",
   orderTotal: 250000,
@@ -48,6 +51,21 @@ function synchronizedDependencies(input?: {
 }
 
 describe("Mercado Pago Checkout Pro payment returns", () => {
+  test("extracts the real return URL payment_id for server reconciliation", async () => {
+    const realPaymentId = getMercadoPagoReturnPaymentId(realReturnUrl.searchParams.get("payment_id"));
+    let requestedPaymentId: string | undefined;
+    const result = await reconcileMercadoPagoPaymentReturn(realPaymentId!, {
+      getPayment: async (id) => {
+        requestedPaymentId = id;
+        return authoritativePayment({ id });
+      },
+      synchronize: async () => ({ result: "processed" as const, status: "approved" }),
+    });
+
+    assert.equal(requestedPaymentId, "177184864973");
+    assert.equal(result.state, "confirmed");
+  });
+
   test("confirms an approved authoritative payment with matching local values", async () => {
     const result = await reconcileMercadoPagoPaymentReturn(paymentId, synchronizedDependencies());
     assert.deepEqual(result, { state: "confirmed", folio: local.orderFolio });

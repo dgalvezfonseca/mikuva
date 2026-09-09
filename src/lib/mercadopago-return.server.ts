@@ -26,23 +26,29 @@ export async function reconcileMercadoPagoPaymentReturn(
   paymentId: string,
   dependencies: ReturnDependencies = productionDependencies,
 ): Promise<ReturnReconciliation> {
+  console.info("[mercadopago-return] reconciliation started", { paymentId });
+  let reconciliation: ReturnReconciliation = { state: "verifying" };
+
   try {
     const payment = mercadoPagoPaymentSchema.parse(await dependencies.getPayment(paymentId));
-    if (payment.id !== paymentId) return { state: "verifying" };
+    if (payment.id === paymentId) {
+      const notification: MercadoPagoNotification = {
+        id: `return:${payment.id}`,
+        type: "payment",
+        action: "return",
+        data: { id: payment.id },
+      };
+      const result = await dependencies.synchronize(notification, payment);
 
-    const notification: MercadoPagoNotification = {
-      id: `return:${payment.id}`,
-      type: "payment",
-      action: "return",
-      data: { id: payment.id },
-    };
-    const result = await dependencies.synchronize(notification, payment);
-
-    if (result.status === "approved" || result.status === "synchronized:approved") {
-      return result.folio ? { state: "confirmed", folio: result.folio } : { state: "confirmed" };
-    }
-    if (result.status === "pending" || result.status === "synchronized:pending") {
-      return result.folio ? { state: "processing", folio: result.folio } : { state: "processing" };
+      if (result.status === "approved" || result.status === "synchronized:approved") {
+        reconciliation = result.folio
+          ? { state: "confirmed", folio: result.folio }
+          : { state: "confirmed" };
+      } else if (result.status === "pending" || result.status === "synchronized:pending") {
+        reconciliation = result.folio
+          ? { state: "processing", folio: result.folio }
+          : { state: "processing" };
+      }
     }
   } catch (error) {
     console.error("[mercadopago-return] payment reconciliation failed", {
@@ -51,5 +57,9 @@ export async function reconcileMercadoPagoPaymentReturn(
     });
   }
 
-  return { state: "verifying" };
+  console.info("[mercadopago-return] reconciliation result", {
+    paymentId,
+    result: reconciliation.state,
+  });
+  return reconciliation;
 }
