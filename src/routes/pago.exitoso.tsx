@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import PaymentReturnPage from "@/components/payments/PaymentReturnPage";
+import { useCart } from "@/hooks/use-cart";
 import { reconcileMercadoPagoPaymentReturn } from "@/lib/mercadopago-return";
 import { getMercadoPagoReturnPaymentId } from "@/lib/mercadopago-return-core";
+import { clearCartAfterConfirmedPayment } from "@/lib/payment-return-cart";
 import { routeMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/pago/exitoso")({
@@ -26,6 +29,11 @@ export const Route = createFileRoute("/pago/exitoso")({
 
 function PaymentSuccessPage() {
   const result = Route.useLoaderData();
+  const { clear } = useCart();
+
+  useEffect(() => {
+    clearCartAfterConfirmedPayment(result.state, clear);
+  }, [result.state, clear]);
 
   if (result.state === "confirmed") {
     return (
