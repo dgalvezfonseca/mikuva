@@ -42,8 +42,8 @@ function TermsPage() {
 
       <LegalSection id="pago" title="2. Pedidos y proceso de pago">
         <p>
-          Los pagos se procesan mediante Checkout Bricks de Mercado Pago. Mikuva no solicita ni
-          recibe directamente números de tarjeta, CVV o fechas de vencimiento.
+          Los pagos se procesan mediante Checkout Pro de Mercado Pago. Mikuva no solicita ni recibe
+          directamente números de tarjeta, CVV o fechas de vencimiento.
         </p>
         <p>
           Un pedido se considera pagado únicamente cuando la confirmación verificable de Mercado

@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 
-import { checkoutIntentSchema, mercadoPagoBrickPaymentSchema } from "./checkout-input";
-import { buildPaymentBrickInitialization } from "./mercadopago-payment-core";
+import { checkoutIntentSchema } from "./checkout-input";
 
 function getErrorCode(error: unknown): string | undefined {
   let current = error;
@@ -46,53 +45,6 @@ export const beginMercadoPagoCheckout = createServerFn({ method: "POST" })
     } catch (error) {
       const code = getErrorCode(error);
       console.error("[checkout] could not start Checkout Pro", {
-        error: error instanceof Error ? error.name : "UnknownError",
-        code,
-      });
-      throw new Error(getPublicCheckoutError(error, code));
-    }
-  });
-
-export const prepareMercadoPagoBricksCheckout = createServerFn({ method: "POST" })
-  .validator(checkoutIntentSchema)
-  .handler(async ({ data }) => {
-    try {
-      const [{ createOrderFromCheckoutIntent }, { getMercadoPagoPublicKey }] = await Promise.all([
-        import("@/db/checkout.server"),
-        import("@/lib/mercadopago.server"),
-      ]);
-      const { enforceRateLimit } = await import("@/lib/rate-limit.server");
-      enforceRateLimit("checkout", { limit: 10, windowMs: 5 * 60_000 });
-      const publicKey = getMercadoPagoPublicKey();
-      const order = await createOrderFromCheckoutIntent(data);
-      return {
-        folio: order.folio,
-        initialization: buildPaymentBrickInitialization(order.total),
-        publicKey,
-      };
-    } catch (error) {
-      const code = getErrorCode(error);
-      console.error("[checkout] could not prepare Payment Brick", {
-        error: error instanceof Error ? error.name : "UnknownError",
-        code,
-      });
-      throw new Error(getPublicCheckoutError(error, code));
-    }
-  });
-
-export const submitMercadoPagoBrickPayment = createServerFn({ method: "POST" })
-  .validator(mercadoPagoBrickPaymentSchema)
-  .handler(async ({ data }) => {
-    try {
-      const [{ createMercadoPagoBrickPayment }, { enforceRateLimit }] = await Promise.all([
-        import("@/lib/mercadopago.server"),
-        import("@/lib/rate-limit.server"),
-      ]);
-      enforceRateLimit("payment", { limit: 5, windowMs: 5 * 60_000 });
-      return await createMercadoPagoBrickPayment(data);
-    } catch (error) {
-      const code = getErrorCode(error);
-      console.error("[checkout] could not submit Payment Brick", {
         error: error instanceof Error ? error.name : "UnknownError",
         code,
       });

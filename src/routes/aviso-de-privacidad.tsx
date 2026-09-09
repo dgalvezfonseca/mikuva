@@ -121,7 +121,7 @@ function PrivacyNoticePage() {
         </p>
         <ul>
           <li>
-            <strong>Mercado Pago:</strong> procesa pagos mediante Checkout Bricks. Mikuva recibe
+            <strong>Mercado Pago:</strong> procesa pagos mediante Checkout Pro. Mikuva recibe
             identificadores de operación y estados de pago, pero no los datos completos de la
             tarjeta.
           </li>

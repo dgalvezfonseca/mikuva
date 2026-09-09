@@ -49,18 +49,6 @@ function getWebhookSecret(): string {
   return requiredEnvironment("MERCADOPAGO_WEBHOOK_SECRET");
 }
 
-function getExpectedCollectorId(): string {
-  const collectorId = requiredEnvironment("MERCADOPAGO_COLLECTOR_ID");
-  if (!/^\d+$/.test(collectorId)) throw new Error("MERCADOPAGO_COLLECTOR_ID is invalid.");
-  return collectorId;
-}
-
-function getExpectedLiveMode(): boolean {
-  const environment = requiredEnvironment("MERCADOPAGO_ENV");
-  if (environment !== "test") throw new Error("MP-3 only accepts MERCADOPAGO_ENV=test.");
-  return false;
-}
-
 function isDuplicateEntry(error: unknown): boolean {
   return (
     typeof error === "object" && error !== null && "code" in error && error.code === "ER_DUP_ENTRY"
@@ -189,8 +177,8 @@ export async function synchronizeMercadoPagoPayment(
         localPayments.find((candidate) => candidate.orderId === order.id);
 
       let rejection: string | null = null;
-      if (!localPayment || !localPayment.providerPreferenceId) {
-        rejection = "preference_mismatch";
+      if (!localPayment) {
+        rejection = "payment_not_found";
       } else if (
         localPayment.orderId !== order.id ||
         localPayment.externalReference !== order.folio ||
@@ -204,8 +192,6 @@ export async function synchronizeMercadoPagoPayment(
           orderFolio: order.folio,
           orderTotal: order.total,
           orderCurrency: order.currency,
-          expectedLiveMode: getExpectedLiveMode(),
-          expectedCollectorId: getExpectedCollectorId(),
         });
       }
 

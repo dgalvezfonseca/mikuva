@@ -6,6 +6,7 @@ import { drizzle, type MySql2Database } from "drizzle-orm/mysql2";
 import { createPool, type Pool } from "mysql2/promise";
 
 import * as schema from "./schema";
+import { withPooledMySqlNamedLock } from "@/lib/mercadopago-preference-lock";
 
 type MikuvaDatabase = MySql2Database<typeof schema>;
 
@@ -39,6 +40,13 @@ export function getDatabase(): MikuvaDatabase {
 
   database = drizzle(pool, { schema, mode: "default" });
   return database;
+}
+
+export async function withDatabaseNamedLock<T>(key: string, work: () => Promise<T>): Promise<T> {
+  getDatabase();
+  if (!pool) throw new Error("Database pool is unavailable.");
+  const connection = await pool.getConnection();
+  return withPooledMySqlNamedLock(connection, key, 10, work);
 }
 
 export async function closeDatabase(): Promise<void> {

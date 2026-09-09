@@ -23,8 +23,8 @@ export const mercadoPagoPaymentSchema = z
     external_reference: z.string().trim().min(1).max(64),
     transaction_amount: z.union([z.string(), z.number().finite()]),
     currency_id: z.string().trim().length(3),
-    live_mode: z.boolean(),
-    collector_id: identifierSchema,
+    live_mode: z.boolean().optional(),
+    collector_id: identifierSchema.optional(),
   })
   .passthrough();
 
@@ -32,11 +32,7 @@ export type MercadoPagoNotification = z.infer<typeof mercadoPagoNotificationSche
 export type MercadoPagoPayment = z.infer<typeof mercadoPagoPaymentSchema>;
 
 export type PaymentValidationFailure =
-  | "external_reference_mismatch"
-  | "amount_mismatch"
-  | "currency_mismatch"
-  | "environment_mismatch"
-  | "collector_mismatch";
+  "external_reference_mismatch" | "amount_mismatch" | "currency_mismatch";
 
 export function mxnToCentavos(value: string | number): number {
   const decimal = typeof value === "number" ? String(value) : value.trim();
@@ -102,11 +98,8 @@ export function validatePaymentAgainstLocal(input: {
   orderFolio: string;
   orderTotal: number;
   orderCurrency: string;
-  expectedLiveMode: boolean;
-  expectedCollectorId: string;
 }): PaymentValidationFailure | null {
-  const { payment, orderFolio, orderTotal, orderCurrency, expectedLiveMode, expectedCollectorId } =
-    input;
+  const { payment, orderFolio, orderTotal, orderCurrency } = input;
 
   if (payment.external_reference !== orderFolio) return "external_reference_mismatch";
 
@@ -120,7 +113,5 @@ export function validatePaymentAgainstLocal(input: {
   if (payment.currency_id !== "MXN" || payment.currency_id !== orderCurrency) {
     return "currency_mismatch";
   }
-  if (payment.live_mode !== expectedLiveMode) return "environment_mismatch";
-  if (payment.collector_id !== expectedCollectorId) return "collector_mismatch";
   return null;
 }

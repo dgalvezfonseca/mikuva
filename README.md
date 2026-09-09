@@ -35,11 +35,8 @@ Variables principales:
 DATABASE_URL=
 WEB3FORMS_ACCESS_KEY=
 MERCADOPAGO_ACCESS_TOKEN=
-MERCADOPAGO_PUBLIC_KEY=
 MERCADOPAGO_ENV=test
 MERCADOPAGO_WEBHOOK_SECRET=
-MERCADOPAGO_WEBHOOK_URL=
-MERCADOPAGO_COLLECTOR_ID=
 APP_URL=
 TRUST_PROXY=false
 HOST=127.0.0.1
@@ -79,11 +76,14 @@ Webhook público:
 POST /api/webhooks/mercadopago
 ```
 
-El handler valida la firma, limita el payload, obtiene el pago autoritativo desde Mercado Pago y
-comprueba folio, importe en centavos, MXN, entorno TEST, collector y preferencia local. La tabla
-`payment_events` aporta idempotencia. Los estados de servicio y de pago permanecen separados.
+Antes de aprobar, el handler valida la firma, limita el payload, obtiene el pago autoritativo desde
+Mercado Pago y exige payment ID, estado `approved`, folio, importe exacto en centavos, MXN y la
+relación con la orden local. La tabla `payment_events` aporta idempotencia. Collector, entorno y
+preferencia son correlaciones adicionales: no bloquean una aprobación si Mercado Pago no garantiza
+un dato presente y fiable para Checkout Pro. Los estados de servicio y de pago permanecen separados.
 
-Esta versión continúa bloqueada deliberadamente a `MERCADOPAGO_ENV=test`. El cambio y validación de
+Usa credenciales de prueba con `MERCADOPAGO_ENV=test` y credenciales de producción con
+`MERCADOPAGO_ENV=production`. El cambio y validación de
 credenciales reales es trabajo manual posterior a staging.
 
 ## Contacto y privacidad
