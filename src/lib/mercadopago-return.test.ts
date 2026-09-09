@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
+import { parseSearchWith } from "@tanstack/react-router";
 
 import { getMercadoPagoReturnPaymentId } from "./mercadopago-return-core";
 import { reconcileMercadoPagoPaymentReturn } from "./mercadopago-return.server";
@@ -52,7 +53,10 @@ function synchronizedDependencies(input?: {
 
 describe("Mercado Pago Checkout Pro payment returns", () => {
   test("extracts the real return URL payment_id for server reconciliation", async () => {
-    const realPaymentId = getMercadoPagoReturnPaymentId(realReturnUrl.searchParams.get("payment_id"));
+    const search = parseSearchWith(JSON.parse)(realReturnUrl.search);
+    const realPaymentId = getMercadoPagoReturnPaymentId(
+      (search as Record<string, unknown>)["payment_id"],
+    );
     let requestedPaymentId: string | undefined;
     const result = await reconcileMercadoPagoPaymentReturn(realPaymentId!, {
       getPayment: async (id) => {

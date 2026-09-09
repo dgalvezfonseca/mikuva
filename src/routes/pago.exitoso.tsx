@@ -6,10 +6,11 @@ import { getMercadoPagoReturnPaymentId } from "@/lib/mercadopago-return-core";
 import { routeMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/pago/exitoso")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    paymentId: getMercadoPagoReturnPaymentId(search["payment_id"]),
+  loaderDeps: ({ search }) => ({
+    paymentId: getMercadoPagoReturnPaymentId(
+      (search as Record<string, unknown>)["payment_id"],
+    ),
   }),
-  loaderDeps: ({ search }) => ({ paymentId: search.paymentId }),
   loader: ({ deps }) =>
     deps.paymentId
       ? reconcileMercadoPagoPaymentReturn({ data: { paymentId: deps.paymentId } })
