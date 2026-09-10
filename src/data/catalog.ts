@@ -87,6 +87,25 @@ const commonFaqs = [
 ];
 
 export const PRODUCTS: Product[] = [
+  // TEMPORARY: remove after Checkout Pro production validation.
+  {
+    id: "prd_prueba_pago",
+    slug: "prueba-de-pago",
+    name: "Prueba de pago",
+    category: "fotografias",
+    shortDescription: "Producto temporal para validar pagos con Checkout Pro.",
+    description: "Producto temporal para realizar una prueba de pago.",
+    image: preparacion,
+    gallery: [preparacion],
+    priceFrom: 10,
+    unitLabel: "pruebas",
+    configurator: "quantity",
+    tiers: [{ units: 1, price: 10, label: "Prueba de pago" }],
+    includes: ["Producto temporal de validacion"],
+    preparation: ["Agrega una unidad al carrito para continuar al checkout."],
+    faqs: [],
+    active: true,
+  },
   {
     id: "prd_fotografias",
     slug: "digitalizacion-de-fotografias",
