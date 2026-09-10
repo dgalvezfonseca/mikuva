@@ -41,15 +41,6 @@ export const CATALOG_CATEGORY_SEEDS: CatalogCategorySeed[] = [
 ];
 
 export const CATALOG_PRODUCT_SEEDS: CatalogProductSeed[] = [
-  // TEMPORARY: remove after Checkout Pro production validation.
-  {
-    categorySlug: "fotografias",
-    slug: "prueba-de-pago",
-    name: "Prueba de pago",
-    shortDescription: "Producto temporal para validar pagos con Checkout Pro.",
-    description: "Producto temporal para realizar una prueba de pago.",
-    basePriceCents: pesosToCents(10),
-  },
   {
     categorySlug: "fotografias",
     slug: "digitalizacion-de-fotografias",
@@ -146,8 +137,6 @@ function reelVariants(
 }
 
 export const CATALOG_VARIANT_SEEDS: CatalogVariantSeed[] = [
-  // TEMPORARY: remove with the prueba-de-pago product after validation.
-  ...volumeVariants("prueba-de-pago", "prueba", [[1, 10]]),
   ...volumeVariants("digitalizacion-de-fotografias", "fotografías", [
     [100, 500],
     [500, 1500],
