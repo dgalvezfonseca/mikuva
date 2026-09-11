@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Box, ShieldCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { routeMeta } from "@/lib/seo";
+import { pageHead } from "@/lib/seo";
 
 const STEPS = [
   [
@@ -15,7 +15,7 @@ const STEPS = [
   ],
   [
     "Envíalos o entrégalos",
-    "Las modalidades, dirección y paqueterías recomendadas están [INFORMACIÓN POR CONFIRMAR].",
+    "Te confirmaremos la forma de entrega antes de recibir el material.",
   ],
   [
     "Recibimos el material",
@@ -31,7 +31,7 @@ const STEPS = [
   ],
   [
     "Te entregamos tus archivos",
-    "El medio de entrega y el periodo de disponibilidad están [INFORMACIÓN POR CONFIRMAR].",
+    "Preparamos la entrega de los archivos digitalizados.",
   ],
   [
     "Regresamos tus originales",
@@ -40,12 +40,12 @@ const STEPS = [
 ] as const;
 
 export const Route = createFileRoute("/como-funciona")({
-  head: () => ({
-    meta: routeMeta(
+  head: () =>
+    pageHead(
       "Cómo funciona",
       "Conoce paso a paso cómo Mikuva recibe, digitaliza, revisa y devuelve tus recuerdos familiares.",
+      "/como-funciona",
     ),
-  }),
   component: HowItWorksPage,
 });
 
@@ -94,7 +94,7 @@ function HowItWorksPage() {
             <h2 className="mt-4 font-serif text-2xl">Antes de enviar</h2>
             <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
               Espera la confirmación de la dirección, el método de recepción y cualquier instrucción
-              específica para material frágil. Estos datos están [INFORMACIÓN POR CONFIRMAR].
+              específica para material frágil.
             </p>
             <Button asChild variant="outline" className="mt-7 rounded-full bg-transparent">
               <Link to="/contacto">

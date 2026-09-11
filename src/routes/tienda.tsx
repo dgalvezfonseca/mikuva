@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 import ProductCard from "@/components/products/ProductCard";
 import { CATEGORIES, PRODUCTS } from "@/data/catalog";
-import { routeMeta } from "@/lib/seo";
+import { pageHead } from "@/lib/seo";
 import type { CategorySlug } from "@/types/catalog";
 
 const FILTERS: Array<{ label: string; value: "todos" | CategorySlug }> = [
@@ -14,12 +14,12 @@ const FILTERS: Array<{ label: string; value: "todos" | CategorySlug }> = [
 export const Route = createFileRoute("/tienda")({
   validateSearch: (search: Record<string, unknown>): { categoria?: string } =>
     typeof search["categoria"] === "string" ? { categoria: search["categoria"] } : {},
-  head: () => ({
-    meta: routeMeta(
+  head: () =>
+    pageHead(
       "Tienda de digitalización",
       "Elige el tipo y volumen de recuerdos que quieres digitalizar con cuidado profesional.",
+      "/tienda",
     ),
-  }),
   component: StorePage,
 });
 

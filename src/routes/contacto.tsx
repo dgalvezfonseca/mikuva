@@ -10,15 +10,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { SITE } from "@/constants/site";
 import { submitContactForm } from "@/lib/contact";
 import { CONTACT_MATERIALS } from "@/lib/contact-input";
-import { routeMeta } from "@/lib/seo";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/contacto")({
-  head: () => ({
-    meta: routeMeta(
+  head: () =>
+    pageHead(
       "Contacto",
       "Cuéntanos qué recuerdos quieres digitalizar y recibe orientación para elegir el servicio adecuado.",
+      "/contacto",
     ),
-  }),
   component: ContactPage,
 });
 

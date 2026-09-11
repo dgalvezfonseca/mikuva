@@ -182,6 +182,7 @@ describe("Mercado Pago payment validation", () => {
     orderFolio: "MK-2026-00001",
     orderTotal: 250000,
     orderCurrency: "MXN",
+    expectedCollectorId: "987654",
   };
 
   test("normalizes decimal MXN without floating-point multiplication", () => {
@@ -191,8 +192,19 @@ describe("Mercado Pago payment validation", () => {
     assert.throws(() => mxnToCentavos("1e3"));
   });
 
-  test("accepts only an exact local match", () => {
-    assert.equal(validatePaymentAgainstLocal({ payment: parsed(), ...local }), null);
+  test("accepts test false and production true live mode", () => {
+    assert.equal(
+      validatePaymentAgainstLocal({ payment: parsed(), expectedLiveMode: false, ...local }),
+      null,
+    );
+    assert.equal(
+      validatePaymentAgainstLocal({
+        payment: mercadoPagoPaymentSchema.parse(authoritativePayment({ live_mode: true })),
+        expectedLiveMode: true,
+        ...local,
+      }),
+      null,
+    );
   });
 
   test("rejects required reference, amount, and currency mismatches", () => {
@@ -201,6 +213,7 @@ describe("Mercado Pago payment validation", () => {
         payment: mercadoPagoPaymentSchema.parse(
           authoritativePayment({ external_reference: "MK-2026-99999" }),
         ),
+        expectedLiveMode: false,
         ...local,
       }),
       "external_reference_mismatch",
@@ -210,6 +223,7 @@ describe("Mercado Pago payment validation", () => {
         payment: mercadoPagoPaymentSchema.parse(
           authoritativePayment({ transaction_amount: "2499.99" }),
         ),
+        expectedLiveMode: false,
         ...local,
       }),
       "amount_mismatch",
@@ -217,21 +231,72 @@ describe("Mercado Pago payment validation", () => {
     assert.equal(
       validatePaymentAgainstLocal({
         payment: mercadoPagoPaymentSchema.parse(authoritativePayment({ currency_id: "USD" })),
+        expectedLiveMode: false,
         ...local,
       }),
       "currency_mismatch",
     );
   });
 
-  test("does not reject on optional collector or environment correlation", () => {
+  test("rejects missing or mismatched environment and collector correlation", () => {
+    assert.equal(
+      validatePaymentAgainstLocal({
+        payment: mercadoPagoPaymentSchema.parse(authoritativePayment({ live_mode: undefined })),
+        expectedLiveMode: false,
+        ...local,
+      }),
+      "environment_mismatch",
+    );
+    assert.equal(
+      validatePaymentAgainstLocal({
+        payment: parsed(),
+        expectedLiveMode: true,
+        ...local,
+      }),
+      "environment_mismatch",
+    );
     assert.equal(
       validatePaymentAgainstLocal({
         payment: mercadoPagoPaymentSchema.parse(
           authoritativePayment({ live_mode: true, collector_id: 111 }),
         ),
+        expectedLiveMode: false,
         ...local,
       }),
-      null,
+      "environment_mismatch",
+    );
+    assert.equal(
+      validatePaymentAgainstLocal({
+        payment: mercadoPagoPaymentSchema.parse(authoritativePayment({ live_mode: true })),
+        expectedLiveMode: false,
+        ...local,
+      }),
+      "environment_mismatch",
+    );
+    assert.equal(
+      validatePaymentAgainstLocal({
+        payment: mercadoPagoPaymentSchema.parse(authoritativePayment({ collector_id: 111 })),
+        expectedLiveMode: false,
+        ...local,
+      }),
+      "collector_mismatch",
+    );
+    assert.equal(
+      validatePaymentAgainstLocal({
+        payment: mercadoPagoPaymentSchema.parse(authoritativePayment({ collector_id: undefined })),
+        expectedLiveMode: false,
+        ...local,
+      }),
+      "collector_mismatch",
+    );
+    assert.equal(
+      validatePaymentAgainstLocal({
+        payment: parsed(),
+        ...local,
+        expectedLiveMode: false,
+        expectedCollectorId: undefined,
+      }),
+      "collector_unconfigured",
     );
   });
 });

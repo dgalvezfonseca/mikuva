@@ -8,15 +8,13 @@ import { Label } from "@/components/ui/label";
 import { useCart } from "@/hooks/use-cart";
 import { beginMercadoPagoCheckout } from "@/lib/checkout";
 import { formatPrice } from "@/lib/format";
-import { routeMeta } from "@/lib/seo";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/checkout")({
-  head: () => ({
-    meta: [
-      ...routeMeta("Checkout", "Confirma tus datos y continúa al entorno seguro de Mercado Pago."),
-      { name: "robots", content: "noindex,nofollow" },
-    ],
-  }),
+  head: () =>
+    pageHead("Checkout", "Confirma tus datos y continúa al entorno seguro de Mercado Pago.", "/checkout", {
+      noindex: true,
+    }),
   component: CheckoutPage,
 });
 

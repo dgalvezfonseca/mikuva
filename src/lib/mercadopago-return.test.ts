@@ -27,6 +27,8 @@ function authoritativePayment(overrides: Record<string, unknown> = {}) {
     external_reference: local.orderFolio,
     transaction_amount: 2500,
     currency_id: "MXN",
+    live_mode: false,
+    collector_id: 987654,
     ...overrides,
   };
 }
@@ -39,7 +41,12 @@ function synchronizedDependencies(input?: {
     getPayment: async () => authoritativePayment(input?.payment),
     synchronize: async (_notification: unknown, rawPayment: unknown) => {
       const payment = mercadoPagoPaymentSchema.parse(rawPayment);
-      const rejection = validatePaymentAgainstLocal({ payment, ...local });
+      const rejection = validatePaymentAgainstLocal({
+        payment,
+        ...local,
+        expectedLiveMode: false,
+        expectedCollectorId: "987654",
+      });
       if (rejection) return { result: "rejected" as const, status: rejection };
 
       const status = mapMercadoPagoStatus(payment.status);
@@ -107,7 +114,7 @@ describe("Mercado Pago Checkout Pro payment returns", () => {
       let writes = 0;
       const result = await reconcileMercadoPagoPaymentReturn(
         paymentId,
-        synchronizedDependencies({ payment, onWrite: () => writes += 1 }),
+        synchronizedDependencies({ payment, onWrite: () => (writes += 1) }),
       );
       assert.deepEqual(result, { state: "verifying" });
       assert.equal(writes, 0);
@@ -129,8 +136,14 @@ describe("Mercado Pago Checkout Pro payment returns", () => {
       },
     };
 
-    assert.equal((await reconcileMercadoPagoPaymentReturn(paymentId, dependencies)).state, "confirmed");
-    assert.equal((await reconcileMercadoPagoPaymentReturn(paymentId, dependencies)).state, "confirmed");
+    assert.equal(
+      (await reconcileMercadoPagoPaymentReturn(paymentId, dependencies)).state,
+      "confirmed",
+    );
+    assert.equal(
+      (await reconcileMercadoPagoPaymentReturn(paymentId, dependencies)).state,
+      "confirmed",
+    );
     assert.equal(writes, 1);
   });
 
@@ -152,7 +165,7 @@ describe("Mercado Pago Checkout Pro payment returns", () => {
     let writes = 0;
     const result = await reconcileMercadoPagoPaymentReturn(
       paymentId,
-      synchronizedDependencies({ onWrite: () => writes += 1 }),
+      synchronizedDependencies({ onWrite: () => (writes += 1) }),
     );
     assert.equal(result.state, "confirmed");
 

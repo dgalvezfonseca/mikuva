@@ -3,15 +3,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import preparacion from "@/assets/historicas/Preparacion-fotografias-mikuva.png";
 import hero from "@/assets/historicas/portadamikuva.png";
 import { Button } from "@/components/ui/button";
-import { routeMeta } from "@/lib/seo";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/nosotros")({
-  head: () => ({
-    meta: routeMeta(
+  head: () =>
+    pageHead(
       "Nosotros",
       "Conoce la intención detrás de Mikuva: preservar la memoria familiar con tecnología y cuidado humano.",
+      "/nosotros",
     ),
-  }),
   component: AboutPage,
 });
 

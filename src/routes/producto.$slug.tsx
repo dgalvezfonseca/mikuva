@@ -10,7 +10,7 @@ import { Section, SectionHeading } from "@/components/ui/section";
 import { CATEGORY_LABEL, getProductBySlug, getRelatedProducts } from "@/data/catalog";
 import { PROCESS_STEPS } from "@/constants/process";
 import { formatPrice } from "@/lib/format";
-import { routeMeta } from "@/lib/seo";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/producto/$slug")({
   loader: ({ params }) => {
@@ -18,12 +18,12 @@ export const Route = createFileRoute("/producto/$slug")({
     if (!product) throw notFound();
     return product;
   },
-  head: ({ loaderData }) => ({
-    meta: routeMeta(
+  head: ({ loaderData }) =>
+    pageHead(
       loaderData?.name ?? "Servicio",
       loaderData?.shortDescription ?? "Servicio de digitalización Mikuva",
+      loaderData ? `/producto/${loaderData.slug}` : "/tienda",
     ),
-  }),
   component: ProductPage,
   notFoundComponent: () => (
     <div className="mx-auto max-w-2xl px-5 py-28 text-center">

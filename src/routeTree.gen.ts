@@ -21,6 +21,7 @@ import { Route as PedidoRouteImport } from './routes/pedido'
 import { Route as PoliticaDeDevolucionesRouteImport } from './routes/politica-de-devoluciones'
 import { Route as PoliticaDeEnviosRouteImport } from './routes/politica-de-envios'
 import { Route as ServiciosRouteImport } from './routes/servicios'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TerminosYCondicionesRouteImport } from './routes/terminos-y-condiciones'
 import { Route as TiendaRouteImport } from './routes/tienda'
 import { Route as ApiHealthRouteImport } from './routes/api.health'
@@ -90,6 +91,11 @@ const ServiciosRoute = ServiciosRouteImport.update({
   path: '/servicios',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TerminosYCondicionesRoute = TerminosYCondicionesRouteImport.update({
   id: '/terminos-y-condiciones',
   path: '/terminos-y-condiciones',
@@ -144,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/politica-de-devoluciones': typeof PoliticaDeDevolucionesRoute
   '/politica-de-envios': typeof PoliticaDeEnviosRoute
   '/servicios': typeof ServiciosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terminos-y-condiciones': typeof TerminosYCondicionesRoute
   '/tienda': typeof TiendaRoute
   '/api/health': typeof ApiHealthRoute
@@ -166,6 +173,7 @@ export interface FileRoutesByTo {
   '/politica-de-devoluciones': typeof PoliticaDeDevolucionesRoute
   '/politica-de-envios': typeof PoliticaDeEnviosRoute
   '/servicios': typeof ServiciosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terminos-y-condiciones': typeof TerminosYCondicionesRoute
   '/tienda': typeof TiendaRoute
   '/api/health': typeof ApiHealthRoute
@@ -189,6 +197,7 @@ export interface FileRoutesById {
   '/politica-de-devoluciones': typeof PoliticaDeDevolucionesRoute
   '/politica-de-envios': typeof PoliticaDeEnviosRoute
   '/servicios': typeof ServiciosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terminos-y-condiciones': typeof TerminosYCondicionesRoute
   '/tienda': typeof TiendaRoute
   '/api/health': typeof ApiHealthRoute
@@ -213,6 +222,7 @@ export interface FileRouteTypes {
     | '/politica-de-devoluciones'
     | '/politica-de-envios'
     | '/servicios'
+    | '/sitemap.xml'
     | '/terminos-y-condiciones'
     | '/tienda'
     | '/api/health'
@@ -235,6 +245,7 @@ export interface FileRouteTypes {
     | '/politica-de-devoluciones'
     | '/politica-de-envios'
     | '/servicios'
+    | '/sitemap.xml'
     | '/terminos-y-condiciones'
     | '/tienda'
     | '/api/health'
@@ -257,6 +268,7 @@ export interface FileRouteTypes {
     | '/politica-de-devoluciones'
     | '/politica-de-envios'
     | '/servicios'
+    | '/sitemap.xml'
     | '/terminos-y-condiciones'
     | '/tienda'
     | '/api/health'
@@ -280,6 +292,7 @@ export interface RootRouteChildren {
   PoliticaDeDevolucionesRoute: typeof PoliticaDeDevolucionesRoute
   PoliticaDeEnviosRoute: typeof PoliticaDeEnviosRoute
   ServiciosRoute: typeof ServiciosRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TerminosYCondicionesRoute: typeof TerminosYCondicionesRoute
   TiendaRoute: typeof TiendaRoute
   ApiHealthRoute: typeof ApiHealthRoute
@@ -376,6 +389,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServiciosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terminos-y-condiciones': {
       id: '/terminos-y-condiciones'
       path: '/terminos-y-condiciones'
@@ -448,6 +468,7 @@ const rootRouteChildren: RootRouteChildren = {
   PoliticaDeDevolucionesRoute: PoliticaDeDevolucionesRoute,
   PoliticaDeEnviosRoute: PoliticaDeEnviosRoute,
   ServiciosRoute: ServiciosRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TerminosYCondicionesRoute: TerminosYCondicionesRoute,
   TiendaRoute: TiendaRoute,
   ApiHealthRoute: ApiHealthRoute,

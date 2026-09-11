@@ -1,15 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { LegalDocument, LegalSection } from "@/components/legal/LegalDocument";
-import { routeMeta } from "@/lib/seo";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/terminos-y-condiciones")({
-  head: () => ({
-    meta: routeMeta(
+  head: () =>
+    pageHead(
       "Términos y condiciones",
       "Condiciones comerciales aplicables a los servicios de digitalización contratados con Mikuva.",
+      "/terminos-y-condiciones",
     ),
-  }),
   component: TermsPage,
 });
 

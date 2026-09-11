@@ -1,0 +1,21 @@
+# Mikuva
+
+> Mikuva es un servicio de preservación y digitalización de recuerdos familiares.
+
+Mikuva digitaliza fotografías, negativos, diapositivas, álbumes y películas 8 mm y Super 8.
+
+## Enlaces principales
+
+- [Inicio](https://mikuva.com/)
+- [Servicios](https://mikuva.com/servicios)
+- [Tienda](https://mikuva.com/tienda)
+- [Cómo funciona](https://mikuva.com/como-funciona)
+- [Preguntas frecuentes](https://mikuva.com/faq)
+- [Contacto](https://mikuva.com/contacto)
+
+## Información legal
+
+- [Aviso de privacidad](https://mikuva.com/aviso-de-privacidad)
+- [Términos y condiciones](https://mikuva.com/terminos-y-condiciones)
+- [Política de envíos](https://mikuva.com/politica-de-envios)
+- [Política de devoluciones](https://mikuva.com/politica-de-devoluciones)

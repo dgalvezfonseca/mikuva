@@ -1,5 +1,6 @@
 export const SITE = {
   name: "Mikuva",
+  url: "https://mikuva.com",
   tagline: "Preservación y digitalización de recuerdos familiares",
   description:
     "Digitalizamos fotografías, negativos, diapositivas, álbumes y películas 8mm y Super 8 para conservar tus historias por generaciones.",

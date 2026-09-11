@@ -1,15 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { LegalDocument, LegalSection } from "@/components/legal/LegalDocument";
-import { routeMeta } from "@/lib/seo";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/politica-de-envios")({
-  head: () => ({
-    meta: routeMeta(
+  head: () =>
+    pageHead(
       "Política de envíos",
       "Consulta cómo se coordina el traslado, recepción y devolución de materiales físicos en Mikuva.",
+      "/politica-de-envios",
     ),
-  }),
   component: ShippingPolicyPage,
 });
 

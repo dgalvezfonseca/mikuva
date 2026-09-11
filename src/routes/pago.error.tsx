@@ -1,15 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import PaymentReturnPage from "@/components/payments/PaymentReturnPage";
-import { routeMeta } from "@/lib/seo";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/pago/error")({
-  head: () => ({
-    meta: [
-      ...routeMeta("Pago no completado", "La operación no pudo completarse en Mercado Pago."),
-      { name: "robots", content: "noindex,nofollow" },
-    ],
-  }),
+  head: () =>
+    pageHead("Pago no completado", "La operación no pudo completarse en Mercado Pago.", "/pago/error", {
+      noindex: true,
+    }),
   component: PaymentErrorPage,
 });
 

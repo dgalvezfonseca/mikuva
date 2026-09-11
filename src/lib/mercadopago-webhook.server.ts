@@ -50,6 +50,18 @@ function getWebhookSecret(): string {
   return requiredEnvironment("MERCADOPAGO_WEBHOOK_SECRET");
 }
 
+function getPaymentValidationConfiguration(): {
+  expectedLiveMode: boolean | undefined;
+  expectedCollectorId: string | undefined;
+} {
+  const environment = process.env["MERCADOPAGO_ENV"];
+  return {
+    expectedLiveMode:
+      environment === "production" ? true : environment === "test" ? false : undefined,
+    expectedCollectorId: process.env["MERCADOPAGO_COLLECTOR_ID"]?.trim() || undefined,
+  };
+}
+
 function isDuplicateEntry(error: unknown): boolean {
   return (
     typeof error === "object" && error !== null && "code" in error && error.code === "ER_DUP_ENTRY"
@@ -85,6 +97,7 @@ export async function synchronizeMercadoPagoPayment(
   payment: MercadoPagoPayment,
 ): Promise<SynchronizationResult> {
   const db = getDatabase();
+  const paymentValidationConfiguration = getPaymentValidationConfiguration();
   const [alreadyProcessed] = await db
     .select({ id: paymentEvents.id, processedStatus: paymentEvents.processedStatus })
     .from(paymentEvents)
@@ -112,9 +125,15 @@ export async function synchronizeMercadoPagoPayment(
       });
     } catch (error) {
       if (!isDuplicateEntry(error)) throw error;
-      return finishSynchronization(payment.id, { result: "duplicate", status: "already_processed" });
+      return finishSynchronization(payment.id, {
+        result: "duplicate",
+        status: "already_processed",
+      });
     }
-    return finishSynchronization(payment.id, { result: "rejected", status: "external_reference_mismatch" });
+    return finishSynchronization(payment.id, {
+      result: "rejected",
+      status: "external_reference_mismatch",
+    });
   }
 
   try {
@@ -204,6 +223,7 @@ export async function synchronizeMercadoPagoPayment(
           orderFolio: order.folio,
           orderTotal: order.total,
           orderCurrency: order.currency,
+          ...paymentValidationConfiguration,
         });
       }
 
@@ -255,7 +275,10 @@ export async function synchronizeMercadoPagoPayment(
     return finishSynchronization(payment.id, result);
   } catch (error) {
     if (isDuplicateEntry(error)) {
-      return finishSynchronization(payment.id, { result: "duplicate", status: "already_processed" });
+      return finishSynchronization(payment.id, {
+        result: "duplicate",
+        status: "already_processed",
+      });
     }
     throw error;
   }

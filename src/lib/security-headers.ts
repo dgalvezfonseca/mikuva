@@ -16,6 +16,13 @@ const PRODUCTION_CSP = [
   "upgrade-insecure-requests",
 ].join("; ");
 
+const NO_STORE_PAGE_PATHS = new Set([
+  "/checkout",
+  "/pago/exitoso",
+  "/pago/pendiente",
+  "/pago/error",
+]);
+
 function isProduction(): boolean {
   return process.env["NODE_ENV"] === "production";
 }
@@ -36,7 +43,11 @@ export function withSecurityHeaders(request: Request, response: Response): Respo
   }
 
   const pathname = new URL(request.url).pathname;
-  if (pathname.startsWith("/api/") || pathname.startsWith("/_serverFn/")) {
+  if (
+    pathname.startsWith("/api/") ||
+    pathname.startsWith("/_serverFn/") ||
+    NO_STORE_PAGE_PATHS.has(pathname)
+  ) {
     headers.set("Cache-Control", "no-store");
   }
 

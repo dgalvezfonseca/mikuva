@@ -71,18 +71,15 @@ const reelSizes = [
 const commonFaqs = [
   {
     question: "¿Cómo les hago llegar mi material?",
-    answer:
-      "Puedes entregarlo en persona o enviarlo por paquetería. La dirección, las modalidades disponibles y la guía definitiva están [INFORMACIÓN POR CONFIRMAR].",
+    answer: "Puedes entregarlo en persona o enviarlo por paquetería.",
   },
   {
     question: "¿Me devuelven los originales?",
-    answer:
-      "El servicio contempla la devolución de tus originales. Los detalles de envío, seguro y tiempos están [INFORMACIÓN POR CONFIRMAR].",
+    answer: "El servicio contempla la devolución de tus originales.",
   },
   {
     question: "¿Cuánto tarda el proceso?",
-    answer:
-      "Depende del volumen y del estado del material. Los plazos de referencia y la forma de confirmarlos están [INFORMACIÓN POR CONFIRMAR].",
+    answer: "Depende del volumen y del estado del material.",
   },
 ];
 
@@ -288,13 +285,7 @@ export const HOME_FAQS = [
   ...commonFaqs,
   {
     question: "¿En qué resolución entregan las fotografías?",
-    answer:
-      "La resolución exacta depende del formato y del estado del material. Las especificaciones finales de entrega están [INFORMACIÓN POR CONFIRMAR].",
-  },
-  {
-    question: "¿Cómo recibo mis archivos?",
-    answer:
-      "Las opciones de descarga o entrega en una unidad física, así como su organización, están [INFORMACIÓN POR CONFIRMAR].",
+    answer: "La resolución exacta depende del formato y del estado del material.",
   },
   {
     question: "¿Qué pasa con mi privacidad?",

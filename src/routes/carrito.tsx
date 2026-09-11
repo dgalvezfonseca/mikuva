@@ -5,15 +5,16 @@ import CartItemRow from "@/components/cart/CartItemRow";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { formatPrice } from "@/lib/format";
-import { routeMeta } from "@/lib/seo";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/carrito")({
-  head: () => ({
-    meta: routeMeta(
+  head: () =>
+    pageHead(
       "Carrito",
       "Revisa los servicios de digitalización elegidos para tus recuerdos.",
+      "/carrito",
+      { noindex: true },
     ),
-  }),
   component: CartPage,
 });
 

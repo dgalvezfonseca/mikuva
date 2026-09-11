@@ -6,7 +6,7 @@ import { useCart } from "@/hooks/use-cart";
 import { reconcileMercadoPagoPaymentReturn } from "@/lib/mercadopago-return";
 import { getMercadoPagoReturnPaymentId } from "@/lib/mercadopago-return-core";
 import { clearCartAfterConfirmedPayment } from "@/lib/payment-return-cart";
-import { routeMeta } from "@/lib/seo";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/pago/exitoso")({
   loaderDeps: ({ search }) => ({
@@ -18,12 +18,13 @@ export const Route = createFileRoute("/pago/exitoso")({
     deps.paymentId
       ? reconcileMercadoPagoPaymentReturn({ data: { paymentId: deps.paymentId } })
       : { state: "verifying" as const },
-  head: () => ({
-    meta: [
-      ...routeMeta("Pago en verificación", "Estamos verificando tu regreso desde Mercado Pago."),
-      { name: "robots", content: "noindex,nofollow" },
-    ],
-  }),
+  head: () =>
+    pageHead(
+      "Pago en verificación",
+      "Estamos verificando tu regreso desde Mercado Pago.",
+      "/pago/exitoso",
+      { noindex: true },
+    ),
   component: PaymentSuccessPage,
 });
 

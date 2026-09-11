@@ -3,15 +3,15 @@ import { ArrowRight, Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { PRODUCTS } from "@/data/catalog";
-import { routeMeta } from "@/lib/seo";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/servicios")({
-  head: () => ({
-    meta: routeMeta(
+  head: () =>
+    pageHead(
       "Servicios",
       "Digitalización profesional de fotografías, negativos, diapositivas, álbumes, 8mm y Super 8.",
+      "/servicios",
     ),
-  }),
   component: ServicesPage,
 });
 

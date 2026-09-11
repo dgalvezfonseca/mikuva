@@ -1,15 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import PaymentReturnPage from "@/components/payments/PaymentReturnPage";
-import { routeMeta } from "@/lib/seo";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/pago/pendiente")({
-  head: () => ({
-    meta: [
-      ...routeMeta("Pago pendiente", "Tu operación en Mercado Pago continúa pendiente."),
-      { name: "robots", content: "noindex,nofollow" },
-    ],
-  }),
+  head: () =>
+    pageHead("Pago pendiente", "Tu operación en Mercado Pago continúa pendiente.", "/pago/pendiente", {
+      noindex: true,
+    }),
   component: PaymentPendingPage,
 });
 

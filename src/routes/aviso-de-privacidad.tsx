@@ -2,15 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { LegalDocument, LegalSection } from "@/components/legal/LegalDocument";
 import { SITE } from "@/constants/site";
-import { routeMeta } from "@/lib/seo";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/aviso-de-privacidad")({
-  head: () => ({
-    meta: routeMeta(
+  head: () =>
+    pageHead(
       "Aviso de privacidad",
       "Conoce qué datos trata Mikuva, para qué los utiliza y cómo puedes ejercer tus derechos.",
+      "/aviso-de-privacidad",
     ),
-  }),
   component: PrivacyNoticePage,
 });
 
@@ -225,10 +225,6 @@ function PrivacyNoticePage() {
           <a href={"tel:" + SITE.phoneHref}>{SITE.phone}</a>. Mikuva comunicará la determinación
           adoptada dentro del plazo máximo de veinte días contado desde la recepción de la
           solicitud, conforme a la legislación aplicable.
-        </p>
-        <p className="legal-manual">
-          <strong>LEGAL MANUAL REQUIRED:</strong> el propietario debe confirmar y publicar el correo
-          específico para solicitudes de privacidad y derechos ARCO.
         </p>
       </LegalSection>
 

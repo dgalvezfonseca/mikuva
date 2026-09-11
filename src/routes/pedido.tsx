@@ -6,15 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { orderFolio } from "@/lib/format";
-import { routeMeta } from "@/lib/seo";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/pedido")({
-  head: () => ({
-    meta: routeMeta(
+  head: () =>
+    pageHead(
       "Consultar pedido",
       "Consulta visualmente el avance de tu proceso de digitalización.",
+      "/pedido",
+      { noindex: true },
     ),
-  }),
   component: OrderPage,
 });
 

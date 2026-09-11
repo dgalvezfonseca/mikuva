@@ -18,6 +18,9 @@ import MatomoTracker from "@/components/privacy/MatomoTracker";
 import { Toaster } from "@/components/ui/sonner";
 import { CartProvider } from "@/hooks/use-cart";
 import { SITE } from "@/constants/site";
+import { pageHead } from "@/lib/seo";
+
+const homeHead = pageHead("Digitalización de recuerdos familiares", SITE.description, "/");
 
 function NotFoundComponent() {
   return (
@@ -84,13 +87,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Mikuva — Digitalización de recuerdos familiares" },
-      { name: "description", content: SITE.description },
+      ...homeHead.meta,
       { property: "og:site_name", content: "Mikuva" },
-      { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      ...homeHead.links,
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
@@ -105,9 +107,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "Organization",
-          name: "Mikuva",
-          description: SITE.description,
+          "@graph": [
+            {
+              "@type": "Organization",
+              name: SITE.name,
+              url: SITE.url,
+              description: SITE.description,
+            },
+            {
+              "@type": "WebSite",
+              name: SITE.name,
+              url: SITE.url,
+              description: SITE.description,
+            },
+          ],
         }),
       },
     ],

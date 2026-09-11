@@ -2,34 +2,25 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 import FAQAccordion from "@/components/faq/FAQAccordion";
 import { Button } from "@/components/ui/button";
-import { routeMeta } from "@/lib/seo";
+import { pageHead } from "@/lib/seo";
 import type { FaqItem } from "@/types/catalog";
 
 const FAQS: FaqItem[] = [
   {
     question: "¿Cómo envío mis fotografías?",
-    answer:
-      "La dirección, paqueterías sugeridas y modalidad de entrega están [INFORMACIÓN POR CONFIRMAR]. Antes de enviar, recibirás instrucciones de empaque específicas para tu material.",
+    answer: "Antes de enviar, recibirás instrucciones de empaque específicas para tu material.",
   },
   {
     question: "¿Mis originales regresan?",
-    answer:
-      "Sí, el servicio contempla la devolución de los originales. Los detalles de envío, seguro y tiempos están [INFORMACIÓN POR CONFIRMAR].",
+    answer: "Sí, el servicio contempla la devolución de los originales.",
   },
   {
     question: "¿Qué resolución utilizan?",
-    answer:
-      "La resolución depende del formato, tamaño y estado del material. Las especificaciones definitivas por servicio están [INFORMACIÓN POR CONFIRMAR].",
+    answer: "La resolución depende del formato, tamaño y estado del material.",
   },
   {
     question: "¿Cuánto tarda el proceso?",
-    answer:
-      "El tiempo depende del volumen, formato y condición del material. Los plazos de referencia están [INFORMACIÓN POR CONFIRMAR].",
-  },
-  {
-    question: "¿Cómo recibo mis archivos?",
-    answer:
-      "Las opciones de descarga o entrega en unidad física están [INFORMACIÓN POR CONFIRMAR].",
+    answer: "El tiempo depende del volumen, formato y condición del material.",
   },
   {
     question: "¿Puedo enviar álbumes completos?",
@@ -52,18 +43,17 @@ const FAQS: FaqItem[] = [
   },
   {
     question: "¿Qué pasa si tengo más fotografías que mi paquete?",
-    answer:
-      "La política de excedentes y el precio por unidad adicional están [INFORMACIÓN POR CONFIRMAR]. No se hará un cargo sin tu autorización.",
+    answer: "No se hará un cargo sin tu autorización.",
   },
 ];
 
 export const Route = createFileRoute("/faq")({
-  head: () => ({
-    meta: routeMeta(
+  head: () =>
+    pageHead(
       "Preguntas frecuentes",
       "Respuestas sobre el envío, cuidado, digitalización y devolución de tus recuerdos.",
+      "/faq",
     ),
-  }),
   component: FAQPage,
 });
 
@@ -74,8 +64,7 @@ function FAQPage() {
         <p className="eyebrow">Antes de comenzar</p>
         <h1 className="display mt-4 text-4xl sm:text-5xl">Preguntas frecuentes</h1>
         <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-          Queremos que tengas claridad antes de entregar un solo original. Donde faltan políticas
-          definitivas, lo señalamos de forma explícita.
+          Queremos que tengas claridad antes de entregar un solo original.
         </p>
       </header>
       <div className="mt-12">

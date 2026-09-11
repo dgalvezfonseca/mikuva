@@ -24,6 +24,15 @@ describe("security headers", () => {
     assert.equal(response.headers.get("content-security-policy"), null);
   });
 
+  test("prevents shared caches from storing transactional payment pages", () => {
+    process.env["NODE_ENV"] = "development";
+
+    for (const pathname of ["/checkout", "/pago/exitoso", "/pago/pendiente", "/pago/error"]) {
+      const response = withSecurityHeaders(new Request(`http://localhost${pathname}`), new Response("ok"));
+      assert.equal(response.headers.get("cache-control"), "no-store");
+    }
+  });
+
   test("adds the production CSP and HSTS", () => {
     process.env["NODE_ENV"] = "production";
     const response = withSecurityHeaders(
