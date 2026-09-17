@@ -1,9 +1,15 @@
 import { Link } from "@tanstack/react-router";
 
-import { LEGAL_NAV, MAIN_NAV, SITE } from "@/constants/site";
+import { LEGAL_NAV, MAIN_NAV } from "@/constants/site";
+import type { FooterSiteSettings } from "@/lib/site-settings";
+
 import Logo from "./Logo";
 
-export default function Footer() {
+type FooterProps = {
+  siteSettings: FooterSiteSettings;
+};
+
+export default function Footer({ siteSettings }: FooterProps) {
   return (
     <footer className="mt-24 border-t border-border bg-ivory">
       <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
@@ -60,11 +66,11 @@ export default function Footer() {
           <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
             <li>
               Teléfono:{" "}
-              <a className="hover:text-foreground" href={`tel:${SITE.phoneHref}`}>
-                {SITE.phone}
+              <a className="hover:text-foreground" href={`tel:${siteSettings.phoneHref}`}>
+                {siteSettings.phone}
               </a>
             </li>
-            <li>{SITE.address}</li>
+            <li>{siteSettings.address}</li>
           </ul>
         </div>
       </div>
@@ -72,7 +78,7 @@ export default function Footer() {
       <div className="border-t border-border/70">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between lg:px-8">
           <p>
-            © {new Date().getFullYear()} {SITE.name}. Todos los derechos reservados.
+            © {new Date().getFullYear()} {siteSettings.name}. Todos los derechos reservados.
           </p>
           <p>Hecho con cuidado para historias que no se repiten.</p>
         </div>

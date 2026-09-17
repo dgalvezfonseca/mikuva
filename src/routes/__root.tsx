@@ -19,6 +19,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { CartProvider } from "@/hooks/use-cart";
 import { SITE } from "@/constants/site";
 import { pageHead } from "@/lib/seo";
+import { getFooterSiteSettings } from "@/lib/site-settings";
 
 const homeHead = pageHead("Digitalización de recuerdos familiares", SITE.description, "/");
 
@@ -83,6 +84,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  loader: () => getFooterSiteSettings(),
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -147,6 +149,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const footerSiteSettings = Route.useLoaderData();
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -157,7 +160,7 @@ function RootComponent() {
             {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
             <Outlet />
           </main>
-          <Footer />
+          <Footer siteSettings={footerSiteSettings} />
         </div>
         <MatomoTracker />
         <CookieConsentManager />
