@@ -29,6 +29,7 @@ import { Route as PagoErrorRouteImport } from './routes/pago.error'
 import { Route as PagoExitosoRouteImport } from './routes/pago.exitoso'
 import { Route as PagoPendienteRouteImport } from './routes/pago.pendiente'
 import { Route as ProductoSlugRouteImport } from './routes/producto.$slug'
+import { Route as ApiDirectusAssetsAssetIdRouteImport } from './routes/api.directus-assets.$assetId'
 import { Route as ApiWebhooksMercadopagoRouteImport } from './routes/api.webhooks.mercadopago'
 
 const IndexRoute = IndexRouteImport.update({
@@ -131,6 +132,12 @@ const ProductoSlugRoute = ProductoSlugRouteImport.update({
   path: '/producto/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiDirectusAssetsAssetIdRoute =
+  ApiDirectusAssetsAssetIdRouteImport.update({
+    id: '/api/directus-assets/$assetId',
+    path: '/api/directus-assets/$assetId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiWebhooksMercadopagoRoute = ApiWebhooksMercadopagoRouteImport.update({
   id: '/api/webhooks/mercadopago',
   path: '/api/webhooks/mercadopago',
@@ -158,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/pago/exitoso': typeof PagoExitosoRoute
   '/pago/pendiente': typeof PagoPendienteRoute
   '/producto/$slug': typeof ProductoSlugRoute
+  '/api/directus-assets/$assetId': typeof ApiDirectusAssetsAssetIdRoute
   '/api/webhooks/mercadopago': typeof ApiWebhooksMercadopagoRoute
 }
 export interface FileRoutesByTo {
@@ -181,6 +189,7 @@ export interface FileRoutesByTo {
   '/pago/exitoso': typeof PagoExitosoRoute
   '/pago/pendiente': typeof PagoPendienteRoute
   '/producto/$slug': typeof ProductoSlugRoute
+  '/api/directus-assets/$assetId': typeof ApiDirectusAssetsAssetIdRoute
   '/api/webhooks/mercadopago': typeof ApiWebhooksMercadopagoRoute
 }
 export interface FileRoutesById {
@@ -205,6 +214,7 @@ export interface FileRoutesById {
   '/pago/exitoso': typeof PagoExitosoRoute
   '/pago/pendiente': typeof PagoPendienteRoute
   '/producto/$slug': typeof ProductoSlugRoute
+  '/api/directus-assets/$assetId': typeof ApiDirectusAssetsAssetIdRoute
   '/api/webhooks/mercadopago': typeof ApiWebhooksMercadopagoRoute
 }
 export interface FileRouteTypes {
@@ -230,6 +240,7 @@ export interface FileRouteTypes {
     | '/pago/exitoso'
     | '/pago/pendiente'
     | '/producto/$slug'
+    | '/api/directus-assets/$assetId'
     | '/api/webhooks/mercadopago'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -253,6 +264,7 @@ export interface FileRouteTypes {
     | '/pago/exitoso'
     | '/pago/pendiente'
     | '/producto/$slug'
+    | '/api/directus-assets/$assetId'
     | '/api/webhooks/mercadopago'
   id:
     | '__root__'
@@ -276,6 +288,7 @@ export interface FileRouteTypes {
     | '/pago/exitoso'
     | '/pago/pendiente'
     | '/producto/$slug'
+    | '/api/directus-assets/$assetId'
     | '/api/webhooks/mercadopago'
   fileRoutesById: FileRoutesById
 }
@@ -300,6 +313,7 @@ export interface RootRouteChildren {
   PagoExitosoRoute: typeof PagoExitosoRoute
   PagoPendienteRoute: typeof PagoPendienteRoute
   ProductoSlugRoute: typeof ProductoSlugRoute
+  ApiDirectusAssetsAssetIdRoute: typeof ApiDirectusAssetsAssetIdRoute
   ApiWebhooksMercadopagoRoute: typeof ApiWebhooksMercadopagoRoute
 }
 
@@ -445,6 +459,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductoSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/directus-assets/$assetId': {
+      id: '/api/directus-assets/$assetId'
+      path: '/api/directus-assets/$assetId'
+      fullPath: '/api/directus-assets/$assetId'
+      preLoaderRoute: typeof ApiDirectusAssetsAssetIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/webhooks/mercadopago': {
       id: '/api/webhooks/mercadopago'
       path: '/api/webhooks/mercadopago'
@@ -476,6 +497,7 @@ const rootRouteChildren: RootRouteChildren = {
   PagoExitosoRoute: PagoExitosoRoute,
   PagoPendienteRoute: PagoPendienteRoute,
   ProductoSlugRoute: ProductoSlugRoute,
+  ApiDirectusAssetsAssetIdRoute: ApiDirectusAssetsAssetIdRoute,
   ApiWebhooksMercadopagoRoute: ApiWebhooksMercadopagoRoute,
 }
 export const routeTree = rootRouteImport

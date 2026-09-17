@@ -28,9 +28,27 @@ describe("security headers", () => {
     process.env["NODE_ENV"] = "development";
 
     for (const pathname of ["/checkout", "/pago/exitoso", "/pago/pendiente", "/pago/error"]) {
-      const response = withSecurityHeaders(new Request(`http://localhost${pathname}`), new Response("ok"));
+      const response = withSecurityHeaders(
+        new Request(`http://localhost${pathname}`),
+        new Response("ok"),
+      );
       assert.equal(response.headers.get("cache-control"), "no-store");
     }
+  });
+
+  test("preserves the controlled public cache policy for Directus asset proxies", () => {
+    process.env["NODE_ENV"] = "development";
+    const response = withSecurityHeaders(
+      new Request("http://localhost/api/directus-assets/123e4567-e89b-42d3-a456-426614174000"),
+      new Response(null, {
+        headers: { "cache-control": "public, max-age=3600, stale-while-revalidate=86400" },
+      }),
+    );
+
+    assert.equal(
+      response.headers.get("cache-control"),
+      "public, max-age=3600, stale-while-revalidate=86400",
+    );
   });
 
   test("adds the production CSP and HSTS", () => {

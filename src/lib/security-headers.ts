@@ -22,6 +22,7 @@ const NO_STORE_PAGE_PATHS = new Set([
   "/pago/pendiente",
   "/pago/error",
 ]);
+const PUBLIC_CACHE_API_PATH_PREFIXES = ["/api/directus-assets/"];
 
 function isProduction(): boolean {
   return process.env["NODE_ENV"] === "production";
@@ -44,7 +45,8 @@ export function withSecurityHeaders(request: Request, response: Response): Respo
 
   const pathname = new URL(request.url).pathname;
   if (
-    pathname.startsWith("/api/") ||
+    (pathname.startsWith("/api/") &&
+      !PUBLIC_CACHE_API_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix))) ||
     pathname.startsWith("/_serverFn/") ||
     NO_STORE_PAGE_PATHS.has(pathname)
   ) {
