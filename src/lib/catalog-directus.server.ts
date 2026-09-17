@@ -3,6 +3,7 @@ import "@tanstack/react-start/server-only";
 import { directusFetch } from "./directus.server";
 
 type DirectusId = string | number;
+type DirectusBoolean = boolean | 0 | 1 | null;
 
 type DirectusCollectionResponse<T> = {
   data: T[];
@@ -16,7 +17,7 @@ type DirectusCategory = {
   description: string | null;
   image: string | null;
   sort: number | null;
-  is_active: boolean | null;
+  is_active: DirectusBoolean;
 };
 
 type DirectusProduct = {
@@ -29,8 +30,8 @@ type DirectusProduct = {
   base_price: number | string | null;
   currency: string | null;
   image: string | null;
-  is_featured: boolean | null;
-  is_active: boolean | null;
+  is_featured: DirectusBoolean;
+  is_active: DirectusBoolean;
   unit_label: string | null;
   configurator: string | null;
   includes: unknown;
@@ -46,8 +47,8 @@ type DirectusProductVariant = {
   name: string | null;
   sku: string | null;
   price: number | string | null;
-  is_default: boolean | null;
-  is_active: boolean | null;
+  is_default: DirectusBoolean;
+  is_active: DirectusBoolean;
   code: string | null;
   metadata: unknown;
   sort_order: number | null;
@@ -150,6 +151,10 @@ function decimal(value: number | string | null): number | null {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function boolean(value: DirectusBoolean): boolean {
+  return value === true || value === 1;
+}
+
 function stringArray(value: unknown): string[] {
   return Array.isArray(value)
     ? value.filter((item): item is string => typeof item === "string" && Boolean(item.trim()))
@@ -211,7 +216,7 @@ async function fetchProductImages(): Promise<DirectusProductImage[]> {
 }
 
 function normalizeCategory(category: DirectusCategory): CatalogCategory | null {
-  if (category.is_active !== true) return null;
+  if (!boolean(category.is_active)) return null;
 
   const slug = text(category.slug);
   const name = text(category.name);
@@ -235,7 +240,7 @@ function normalizeVariant(variant: DirectusProductVariant): CatalogVariant {
     sku: text(variant.sku),
     code: text(variant.code),
     price: decimal(variant.price),
-    isDefault: variant.is_default === true,
+    isDefault: boolean(variant.is_default),
     metadata: variant.metadata ?? null,
   };
 }
@@ -275,7 +280,7 @@ export async function getDirectusCatalog(): Promise<DirectusCatalog> {
   const imagesByProduct = new Map<string, CatalogProductImage[]>();
 
   for (const variant of variants) {
-    if (variant.is_active !== true || variant.product === null) continue;
+    if (!boolean(variant.is_active) || variant.product === null) continue;
     const productId = String(variant.product);
     const productVariants = variantsByProduct.get(productId) ?? [];
     productVariants.push(normalizeVariant(variant));
@@ -296,7 +301,7 @@ export async function getDirectusCatalog(): Promise<DirectusCatalog> {
   }
 
   const normalizedProducts = products.flatMap((product) => {
-    if (product.is_active !== true || product.category === null) return [];
+    if (!boolean(product.is_active) || product.category === null) return [];
     const categoryId = String(product.category);
     const slug = text(product.slug);
     const name = text(product.name);
@@ -314,7 +319,7 @@ export async function getDirectusCatalog(): Promise<DirectusCatalog> {
         gallery: imagesByProduct.get(String(product.id)) ?? [],
         basePrice: decimal(product.base_price),
         currency: text(product.currency),
-        featured: product.is_featured === true,
+        featured: boolean(product.is_featured),
         unitLabel: text(product.unit_label),
         configurator: text(product.configurator),
         includes: stringArray(product.includes),

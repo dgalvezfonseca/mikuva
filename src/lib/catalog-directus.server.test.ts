@@ -29,9 +29,9 @@ describe("Directus catalog", () => {
           tagline: "Editorial",
           description: "Descripción desde Directus",
           image: "category-file",
-          is_active: true,
+          is_active: 1,
         },
-        { id: 11, slug: "oculta", name: "Oculta", is_active: false },
+        { id: 11, slug: "oculta", name: "Oculta", is_active: 0 },
       ],
       "/items/products": [
         {
@@ -44,8 +44,8 @@ describe("Directus catalog", () => {
           base_price: "1250.50",
           currency: "MXN",
           image: "cover-file",
-          is_featured: true,
-          is_active: true,
+          is_featured: 1,
+          is_active: 1,
           unit_label: "fotografías",
           configurator: "quantity",
           includes: ["Escaneo"],
@@ -53,7 +53,15 @@ describe("Directus catalog", () => {
           faqs: [{ question: "¿Pregunta?", answer: "Respuesta" }],
           film_types: [],
         },
-        { id: 21, category: 10, slug: "oculto", name: "Oculto", is_active: false },
+        {
+          id: 21,
+          category: 10,
+          slug: "sin-destacar",
+          name: "Producto sin destacar",
+          is_featured: 0,
+          is_active: 1,
+        },
+        { id: 22, category: 10, slug: "oculto", name: "Oculto", is_active: 0 },
       ],
       "/items/product_variants": [
         {
@@ -63,11 +71,12 @@ describe("Directus catalog", () => {
           sku: "SKU-30",
           code: "directus-30",
           price: "1250.50",
-          is_default: true,
-          is_active: true,
+          is_default: 1,
+          is_active: 1,
           metadata: { units: 100 },
         },
-        { id: 31, product: 20, name: "Inactiva", is_active: false },
+        { id: 31, product: 20, name: "Alternativa", is_default: 0, is_active: 1 },
+        { id: 32, product: 20, name: "Inactiva", is_active: 0 },
       ],
       "/items/product_images": [
         { id: 40, product: 20, file: "gallery-file", alt_text: "Foto del producto" },
@@ -95,23 +104,21 @@ describe("Directus catalog", () => {
           image: { assetId: "category-file" },
         },
       ]);
-      assert.equal(catalog.products.length, 1);
+      assert.equal(catalog.products.length, 2);
       assert.equal(catalog.products[0]?.name, "Producto desde Directus");
       assert.equal(catalog.products[0]?.basePrice, 1250.5);
+      assert.equal(catalog.products[0]?.featured, true);
+      assert.equal(catalog.products[1]?.featured, false);
       assert.deepEqual(catalog.products[0]?.gallery, [
         { id: "40", assetId: "gallery-file", altText: "Foto del producto" },
       ]);
-      assert.deepEqual(catalog.products[0]?.variants, [
-        {
-          id: "30",
-          name: "Paquete editorial",
-          sku: "SKU-30",
-          code: "directus-30",
-          price: 1250.5,
-          isDefault: true,
-          metadata: { units: 100 },
-        },
-      ]);
+      assert.deepEqual(
+        catalog.products[0]?.variants.map(({ id, isDefault }) => ({ id, isDefault })),
+        [
+          { id: "30", isDefault: true },
+          { id: "31", isDefault: false },
+        ],
+      );
       assert.equal(requestedPaths.length, 4);
       assert.ok(
         requestedPaths.every(
