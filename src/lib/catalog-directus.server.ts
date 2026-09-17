@@ -110,6 +110,7 @@ export type CatalogProduct = {
   featured: boolean;
   unitLabel: string;
   configurator: string;
+  active: boolean;
   includes: string[];
   preparation: string[];
   faqs: CatalogFaq[];
@@ -322,6 +323,7 @@ export async function getDirectusCatalog(): Promise<DirectusCatalog> {
         featured: boolean(product.is_featured),
         unitLabel: text(product.unit_label),
         configurator: text(product.configurator),
+        active: boolean(product.is_active),
         includes: stringArray(product.includes),
         preparation: stringArray(product.preparation),
         faqs: faqs(product.faqs),

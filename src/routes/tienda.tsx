@@ -1,15 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
 
-import ProductCard from "@/components/products/ProductCard";
-import { CATEGORIES, PRODUCTS } from "@/data/catalog";
+import StoreProductCard from "@/components/products/StoreProductCard";
 import { pageHead } from "@/lib/seo";
-import type { CategorySlug } from "@/types/catalog";
-
-const FILTERS: Array<{ label: string; value: "todos" | CategorySlug }> = [
-  { label: "Todos", value: "todos" },
-  ...CATEGORIES.map((category) => ({ label: category.name, value: category.slug })),
-];
+import { getStoreCatalog } from "@/lib/store-catalog";
 
 export const Route = createFileRoute("/tienda")({
   validateSearch: (search: Record<string, unknown>): { categoria?: string } =>
@@ -20,21 +14,23 @@ export const Route = createFileRoute("/tienda")({
       "Elige el tipo y volumen de recuerdos que quieres digitalizar con cuidado profesional.",
       "/tienda",
     ),
+  loader: () => getStoreCatalog(),
   component: StorePage,
 });
 
 function StorePage() {
   const { categoria } = Route.useSearch();
-  const active: "todos" | CategorySlug = FILTERS.some((filter) => filter.value === categoria)
-    ? (categoria as CategorySlug)
-    : "todos";
+  const { categories, products: catalogProducts } = Route.useLoaderData();
+  const filters = [
+    { label: "Todos", value: "todos" },
+    ...categories.map(({ name, slug }) => ({ label: name, value: slug })),
+  ];
+  const active = filters.some((filter) => filter.value === categoria) ? categoria : "todos";
   const navigate = Route.useNavigate();
   const products = useMemo(
     () =>
-      PRODUCTS.filter(
-        (product) => product.active && (active === "todos" || product.category === active),
-      ),
-    [active],
+      catalogProducts.filter((product) => active === "todos" || product.category.slug === active),
+    [active, catalogProducts],
   );
 
   return (
@@ -56,7 +52,7 @@ function StorePage() {
           role="group"
           aria-label="Filtrar servicios por material"
         >
-          {FILTERS.map((filter) => (
+          {filters.map((filter) => (
             <button
               key={filter.value}
               type="button"
@@ -70,14 +66,22 @@ function StorePage() {
             </button>
           ))}
         </div>
-        <p className="mt-5 text-sm text-muted-foreground" aria-live="polite">
-          {products.length} {products.length === 1 ? "servicio" : "servicios"}
-        </p>
-        <div className="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {catalogProducts.length === 0 ? (
+          <p className="mt-5 text-sm text-muted-foreground" role="status">
+            El catálogo está temporalmente no disponible. Intenta de nuevo más tarde.
+          </p>
+        ) : (
+          <>
+            <p className="mt-5 text-sm text-muted-foreground" aria-live="polite">
+              {products.length} {products.length === 1 ? "servicio" : "servicios"}
+            </p>
+            <div className="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {products.map((product) => (
+                <StoreProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </>
+        )}
       </main>
     </>
   );
