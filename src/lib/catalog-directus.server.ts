@@ -38,6 +38,9 @@ type DirectusProduct = {
   preparation: unknown;
   faqs: unknown;
   film_types: unknown;
+  meta_title: string | null;
+  meta_description: string | null;
+  og_image: string | null;
   sort: number | null;
 };
 
@@ -115,6 +118,9 @@ export type CatalogProduct = {
   preparation: string[];
   faqs: CatalogFaq[];
   filmTypes: string[];
+  metaTitle: string;
+  metaDescription: string;
+  ogImage: CatalogAsset | null;
   variants: CatalogVariant[];
 };
 
@@ -125,7 +131,7 @@ export type DirectusCatalog = {
 
 const CATEGORY_FIELDS = "id,sort,slug,name,tagline,description,image,is_active";
 const PRODUCT_FIELDS =
-  "id,sort,category,slug,name,short_description,description,base_price,currency,image,is_featured,is_active,unit_label,configurator,includes,preparation,faqs,film_types";
+  "id,sort,category,slug,name,short_description,description,base_price,currency,image,is_featured,is_active,unit_label,configurator,includes,preparation,faqs,film_types,meta_title,meta_description,og_image";
 const VARIANT_FIELDS =
   "id,sort,sort_order,product,name,sku,price,is_default,is_active,code,metadata";
 const IMAGE_FIELDS = "id,sort,product,file,alt_text";
@@ -328,6 +334,9 @@ export async function getDirectusCatalog(): Promise<DirectusCatalog> {
         preparation: stringArray(product.preparation),
         faqs: faqs(product.faqs),
         filmTypes: stringArray(product.film_types),
+        metaTitle: text(product.meta_title),
+        metaDescription: text(product.meta_description),
+        ogImage: asset(product.og_image),
         variants: variantsByProduct.get(String(product.id)) ?? [],
       },
     ];

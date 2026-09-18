@@ -8,12 +8,20 @@ import { useCart } from "@/hooks/use-cart";
 import { getReelVariantCode } from "@/lib/catalog-variant-code";
 import { formatPrice } from "@/lib/format";
 import { reelSubtotal } from "@/lib/pricing";
-import type { Product } from "@/types/catalog";
+import type { ReelSize } from "@/types/catalog";
 
-export default function FilmConfigurator({ product }: { product: Product }) {
+type TransactionalFilmProduct = {
+  slug: string;
+  name: string;
+  image: string;
+  filmTypes: string[];
+  reels: ReelSize[];
+};
+
+export default function FilmConfigurator({ product }: { product: TransactionalFilmProduct }) {
   const { addItem } = useCart();
-  const reels = product.reels ?? [];
-  const [filmType, setFilmType] = useState(product.filmTypes?.[0] ?? "8mm");
+  const reels = product.reels;
+  const [filmType, setFilmType] = useState(product.filmTypes[0] ?? "");
   const [reelId, setReelId] = useState(reels[0]?.id ?? "");
   const [quantity, setQuantity] = useState(1);
   const reel = reels.find((item) => item.id === reelId) ?? reels[0];
@@ -26,7 +34,7 @@ export default function FilmConfigurator({ product }: { product: Product }) {
       <fieldset className="mt-6">
         <legend className="text-sm font-semibold">Tipo</legend>
         <div className="mt-3 grid grid-cols-2 gap-2">
-          {product.filmTypes?.map((type) => (
+          {product.filmTypes.map((type) => (
             <button
               key={type}
               type="button"

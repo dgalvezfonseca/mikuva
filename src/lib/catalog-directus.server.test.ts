@@ -52,6 +52,9 @@ describe("Directus catalog", () => {
           preparation: ["Ordena"],
           faqs: [{ question: "¿Pregunta?", answer: "Respuesta" }],
           film_types: [],
+          meta_title: "Título editorial",
+          meta_description: "Descripción editorial",
+          og_image: "og-file",
         },
         {
           id: 21,
@@ -108,6 +111,9 @@ describe("Directus catalog", () => {
       assert.equal(catalog.products[0]?.name, "Producto desde Directus");
       assert.equal(catalog.products[0]?.basePrice, 1250.5);
       assert.equal(catalog.products[0]?.featured, true);
+      assert.equal(catalog.products[0]?.metaTitle, "Título editorial");
+      assert.equal(catalog.products[0]?.metaDescription, "Descripción editorial");
+      assert.deepEqual(catalog.products[0]?.ogImage, { assetId: "og-file" });
       assert.equal(catalog.products[1]?.featured, false);
       assert.deepEqual(catalog.products[0]?.gallery, [
         { id: "40", assetId: "gallery-file", altText: "Foto del producto" },

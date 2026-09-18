@@ -8,10 +8,22 @@ import { useCart } from "@/hooks/use-cart";
 import { getVolumeVariantCode } from "@/lib/catalog-variant-code";
 import { formatNumber, formatPrice } from "@/lib/format";
 import { recommendTier } from "@/lib/pricing";
-import type { Product } from "@/types/catalog";
+import type { VolumeTier } from "@/types/catalog";
 
-export default function PhotoQuantityConfigurator({ product }: { product: Product }) {
-  const tiers = product.tiers ?? [];
+type TransactionalQuantityProduct = {
+  slug: string;
+  name: string;
+  image: string;
+  unitLabel: string;
+  tiers: VolumeTier[];
+};
+
+export default function PhotoQuantityConfigurator({
+  product,
+}: {
+  product: TransactionalQuantityProduct;
+}) {
+  const tiers = product.tiers;
   const min = tiers[0]?.units ?? 1;
   const max = tiers[tiers.length - 1]?.units ?? min;
   const [units, setUnits] = useState(min);
