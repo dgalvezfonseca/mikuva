@@ -1,7 +1,6 @@
 import { useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 
-import { COOKIE_CONSENT_UPDATED_EVENT, hasAnalyticsConsent } from "@/lib/cookie-consent";
 import { trackMatomoPageView } from "@/lib/matomo";
 
 export default function MatomoTracker() {
@@ -10,11 +9,6 @@ export default function MatomoTracker() {
 
   useEffect(() => {
     const trackCurrentRoute = () => {
-      if (!hasAnalyticsConsent()) {
-        lastTrackedUrl.current = undefined;
-        return;
-      }
-
       const routeUrl = new URL(href, window.location.origin);
       // Payment providers append identifiers to return URLs. Analytics only
       // needs the route, never payment-related query strings or fragments.
@@ -25,10 +19,7 @@ export default function MatomoTracker() {
       void trackMatomoPageView(absoluteUrl, document.title);
     };
 
-    window.addEventListener(COOKIE_CONSENT_UPDATED_EVENT, trackCurrentRoute);
     trackCurrentRoute();
-
-    return () => window.removeEventListener(COOKIE_CONSENT_UPDATED_EVENT, trackCurrentRoute);
   }, [href]);
 
   return null;

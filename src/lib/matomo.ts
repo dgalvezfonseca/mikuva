@@ -33,7 +33,7 @@ function configureMatomo() {
   }
 }
 
-/** Loads Matomo only after analytics consent. Repeated calls share one script. */
+/** Loads Matomo once for the whole site. Repeated calls share one script. */
 export function loadMatomo(): Promise<boolean> {
   if (typeof window === "undefined") return Promise.resolve(false);
 
@@ -82,13 +82,4 @@ export async function trackMatomoPageView(url: string, title: string): Promise<b
   queue.push(["setDocumentTitle", title]);
   queue.push(["trackPageView"]);
   return true;
-}
-
-/** Stops new tracking after revocation without attempting to tear down the SDK. */
-export function disableMatomoTracking() {
-  if (typeof window === "undefined" || !window._paq) return;
-
-  window._paq.push(["disableLinkTracking"]);
-  window._paq.push(["deleteCookies"]);
-  linkTrackingEnabled = false;
 }

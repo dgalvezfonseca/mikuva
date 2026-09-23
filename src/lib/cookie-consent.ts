@@ -1,5 +1,4 @@
 import { loadChatwoot } from "@/lib/chatwoot";
-import { disableMatomoTracking, loadMatomo } from "@/lib/matomo";
 
 type CookieConsentApi = typeof import("vanilla-cookieconsent");
 
@@ -15,12 +14,6 @@ function notifyConsentUpdated() {
 function syncOptionalServices(api: CookieConsentApi) {
   if (api.acceptedService("chatwoot", "functional")) {
     void loadChatwoot();
-  }
-
-  if (api.acceptedService("matomo", "analytics")) {
-    void loadMatomo();
-  } else {
-    disableMatomoTracking();
   }
 
   notifyConsentUpdated();
@@ -72,16 +65,6 @@ function createConsentConfig(api: CookieConsentApi): CookieConsent.CookieConsent
           },
         },
       },
-      analytics: {
-        services: {
-          matomo: {
-            label: "Matomo — Medición de uso",
-            cookies: [{ name: /^_pk_/ }],
-            onAccept: () => void loadMatomo(),
-            onReject: disableMatomoTracking,
-          },
-        },
-      },
     },
     language: {
       default: "es-MX",
@@ -91,7 +74,7 @@ function createConsentConfig(api: CookieConsentApi): CookieConsent.CookieConsent
             label: "Preferencias de privacidad",
             title: "Tu privacidad, con claridad",
             description:
-              "Usamos cookies necesarias para que Mikuva funcione correctamente. Tú decides si permites funciones opcionales como el chat, el mapa y la medición de visitas.",
+              "Usamos cookies necesarias para que Mikuva funcione correctamente. Tú decides si permites funciones opcionales como el chat y el mapa.",
             acceptNecessaryBtn: "Rechazar opcionales",
             showPreferencesBtn: "Configurar",
             acceptAllBtn: "Aceptar todas",
@@ -107,7 +90,7 @@ function createConsentConfig(api: CookieConsentApi): CookieConsent.CookieConsent
             sections: [
               {
                 description:
-                  "Usamos cookies necesarias para que Mikuva funcione correctamente. Puedes decidir si permites el chat, el mapa de ubicación y la medición de visitas.",
+                  "Usamos cookies necesarias para que Mikuva funcione correctamente. Puedes decidir si permites el chat y el mapa de ubicación.",
               },
               {
                 title: 'Cookies necesarias <span class="pm__badge">Siempre activas</span>',
@@ -151,28 +134,6 @@ function createConsentConfig(api: CookieConsentApi): CookieConsent.CookieConsent
                 },
               },
               {
-                title: "Medición del sitio",
-                description:
-                  "Permite conocer qué páginas se visitan y cómo se usa el sitio para poder mejorarlo.",
-                linkedCategory: "analytics",
-                cookieTable: {
-                  headers: {
-                    name: "Cookie",
-                    description: "Finalidad",
-                  },
-                  body: [
-                    {
-                      name: "_pk_id.<sitio>.<dominio>",
-                      description: "Distingue una visita recurrente en Matomo.",
-                    },
-                    {
-                      name: "_pk_ses.<sitio>.<dominio>",
-                      description: "Conserva temporalmente los datos de la sesión de medición.",
-                    },
-                  ],
-                },
-              },
-              {
                 title: "Información legal",
                 description:
                   '<a href="/aviso-de-privacidad">Consulta el aviso de privacidad y cookies</a>',
@@ -203,10 +164,6 @@ export function initializeCookieConsent(): Promise<void> {
 
 export function hasCookieConsent(): boolean {
   return cookieConsentApi?.validConsent() ?? false;
-}
-
-export function hasAnalyticsConsent(): boolean {
-  return cookieConsentApi?.acceptedService("matomo", "analytics") ?? false;
 }
 
 export function hasGoogleMapsConsent(): boolean {

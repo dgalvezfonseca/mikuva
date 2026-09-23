@@ -86,9 +86,9 @@ function PrivacyNoticePage() {
         </ul>
         <h3>Finalidades opcionales</h3>
         <p>
-          Con consentimiento previo, Mikuva utiliza Matomo para medir el uso del sitio y Chatwoot
-          para ofrecer chat de atención. Google Maps puede cargarse en la página de contacto para
-          mostrar la ubicación. Estas opciones pueden administrarse desde el control de privacidad
+          Mikuva utiliza Matomo para medir el uso del sitio. Chatwoot puede utilizarse para ofrecer
+          chat de atención y Google Maps puede cargarse en la página de contacto para mostrar la
+          ubicación. Estas funciones opcionales pueden administrarse desde el control de privacidad
           disponible en el sitio.
         </p>
       </LegalSection>
@@ -137,8 +137,8 @@ function PrivacyNoticePage() {
             correspondiente. La integración automática todavía no está activa.
           </li>
           <li>
-            <strong>Chatwoot, Matomo y Google Maps:</strong> se cargan únicamente según las
-            preferencias de consentimiento elegidas por la persona usuaria.
+            <strong>Chatwoot y Google Maps:</strong> se cargan únicamente según las preferencias de
+            consentimiento elegidas por la persona usuaria. Matomo mide el uso del sitio.
           </li>
           <li>
             <strong>Google Fonts:</strong> proporciona las tipografías del sitio y puede recibir
@@ -150,8 +150,8 @@ function PrivacyNoticePage() {
       <LegalSection id="cookies" title="5. Cookies, almacenamiento local y servicios opcionales">
         <p>
           El sitio utiliza una cookie necesaria para recordar las preferencias de privacidad y
-          almacenamiento local para conservar temporalmente el carrito. Los servicios funcionales y
-          de analítica requieren consentimiento previo.
+          almacenamiento local para conservar temporalmente el carrito. Los servicios funcionales
+          requieren consentimiento previo.
         </p>
         <div
           className="legal-table-wrap"
@@ -189,7 +189,7 @@ function PrivacyNoticePage() {
                 <td>
                   <code>_pk_id.*</code> / <code>_pk_ses.*</code>
                 </td>
-                <td>Matomo: medición de visitas, sólo con consentimiento de analítica.</td>
+                <td>Matomo: medición de visitas.</td>
                 <td>13 meses / 30 minutos</td>
               </tr>
               <tr>

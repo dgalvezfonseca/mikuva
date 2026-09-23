@@ -27,16 +27,14 @@ El mapa de la página de contacto se descarga desde `https://www.google.com/maps
 
 No se documentan cookies específicas de Google Maps porque su presencia y alcance no se han confirmado en esta implementación.
 
-## Servicio analítico: Matomo
+## Medición del sitio: Matomo
 
-El tracker se descarga desde `https://arguz.com/matomo/` con el identificador de sitio `3` únicamente cuando se acepta Matomo dentro de la categoría `analytics`. Registra una vista inicial y los cambios de ruta del sitio sin duplicar la misma URL.
+El tracker se descarga desde `https://arguz.com/matomo/` con el identificador de sitio `3` en todas las páginas. Registra una vista inicial y los cambios de ruta sin duplicar la misma URL ni incluir query strings o fragments.
 
 | Cookie conocida             | Finalidad o condición                          |
 | --------------------------- | ---------------------------------------------- |
 | `_pk_id.<sitio>.<dominio>`  | Distingue una visita recurrente en Matomo.     |
 | `_pk_ses.<sitio>.<dominio>` | Conserva temporalmente los datos de la sesión. |
-
-Al revocar el servicio se detiene el tracking de rutas y enlaces, se solicita a Matomo borrar sus cookies y se eliminan las cookies accesibles cuyo nombre comienza con `_pk_`. El SDK ya descargado permanece en la página actual, pero no recibe nuevas vistas desde la aplicación.
 
 ## Trabajo legal pendiente
 
