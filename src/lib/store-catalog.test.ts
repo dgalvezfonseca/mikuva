@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import { toStoreCatalog } from "./store-catalog";
+import { toServicesCatalog, toStoreCatalog } from "./store-catalog";
 
 const activeCatalog = {
   categories: [
@@ -21,6 +21,8 @@ const activeCatalog = {
       slug: "digitalizacion-directus",
       name: "Producto desde Directus",
       shortDescription: "Descripción breve",
+      description: "Descripción editorial completa",
+      includes: ["Incluye uno", "Incluye dos"],
       image: { assetId: "product-asset" },
       basePrice: 1000,
       currency: "MXN",
@@ -37,6 +39,8 @@ const activeCatalog = {
       slug: "no-debe-mostrarse",
       name: "Inactivo",
       shortDescription: "",
+      description: "",
+      includes: [],
       image: null,
       basePrice: null,
       currency: "MXN",
@@ -50,6 +54,8 @@ const activeCatalog = {
       slug: "sin-imagen",
       name: "Producto sin imagen",
       shortDescription: "",
+      description: "",
+      includes: [],
       image: null,
       basePrice: null,
       currency: "MXN",
@@ -106,5 +112,26 @@ describe("store catalog", () => {
       catalog.products.find((product) => product.id === "product-without-image")?.mainImageUrl,
       null,
     );
+  });
+
+  test("adapts service-page content from the Directus catalog without transactional fields", () => {
+    assert.deepEqual(toServicesCatalog(activeCatalog), [
+      {
+        id: "product-1",
+        slug: "digitalizacion-directus",
+        name: "Producto desde Directus",
+        mainImageUrl: "/api/directus-assets/product-asset",
+        description: "Descripción editorial completa",
+        includes: ["Incluye uno", "Incluye dos"],
+      },
+      {
+        id: "product-without-image",
+        slug: "sin-imagen",
+        name: "Producto sin imagen",
+        mainImageUrl: null,
+        description: "",
+        includes: [],
+      },
+    ]);
   });
 });

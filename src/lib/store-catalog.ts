@@ -15,6 +15,8 @@ type DirectusStoreCatalog = {
     slug: string;
     name: string;
     shortDescription: string;
+    description?: string;
+    includes?: string[];
     image: { assetId: string } | null;
     basePrice: number | null;
     currency: string;
@@ -59,6 +61,11 @@ export type StoreProduct = {
 export type StoreCatalog = {
   categories: StoreCategory[];
   products: StoreProduct[];
+};
+
+export type ServiceProduct = Pick<StoreProduct, "id" | "slug" | "name" | "mainImageUrl"> & {
+  description: string;
+  includes: string[];
 };
 
 function assetUrl(assetId: string): string {
@@ -113,8 +120,30 @@ export function toStoreCatalog(catalog: DirectusStoreCatalog): StoreCatalog {
   };
 }
 
+export function toServicesCatalog(catalog: DirectusStoreCatalog): ServiceProduct[] {
+  const productsById = new Map(catalog.products.map((product) => [product.id, product]));
+
+  return toStoreCatalog(catalog).products.map((product) => {
+    const source = productsById.get(product.id);
+    return {
+      id: product.id,
+      slug: product.slug,
+      name: product.name,
+      mainImageUrl: product.mainImageUrl,
+      description: source?.description ?? "",
+      includes: source?.includes ?? [],
+    };
+  });
+}
+
 export const getStoreCatalog = createServerFn({ method: "GET" }).handler(async () => {
   const { getDirectusCatalog } = await import("./catalog-directus.server");
 
   return toStoreCatalog(await getDirectusCatalog());
+});
+
+export const getServicesCatalog = createServerFn({ method: "GET" }).handler(async () => {
+  const { getDirectusCatalog } = await import("./catalog-directus.server");
+
+  return toServicesCatalog(await getDirectusCatalog());
 });
