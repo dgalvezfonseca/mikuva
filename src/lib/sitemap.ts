@@ -16,7 +16,7 @@ const PUBLIC_PATHS = [
 ] as const;
 
 function escapeXml(value: string): string {
-  return value.replace(/[<>&'\"]/g, (character) => {
+  return value.replace(/[<>&'"]/g, (character) => {
     const entities: Record<string, string> = {
       "<": "&lt;",
       ">": "&gt;",
@@ -28,17 +28,31 @@ function escapeXml(value: string): string {
   });
 }
 
-export function sitemapUrls(): string[] {
+export function buildSitemapUrls(cmsSlugs: readonly string[] = []): string[] {
   return [
-    ...PUBLIC_PATHS.map((path) => new URL(path, SITE.url).toString()),
-    ...PRODUCTS.filter((product) => product.active).map((product) =>
-      new URL(`/producto/${product.slug}`, SITE.url).toString(),
-    ),
+    ...new Set([
+      ...PUBLIC_PATHS.map((path) => new URL(path, SITE.url).toString()),
+      ...PRODUCTS.filter((product) => product.active).map((product) =>
+        new URL(`/producto/${product.slug}`, SITE.url).toString(),
+      ),
+      ...cmsSlugs.map((slug) => new URL(`/${slug}`, SITE.url).toString()),
+    ]),
   ];
 }
 
-export function sitemapXml(): string {
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${sitemapUrls()
+export async function sitemapUrls(): Promise<string[]> {
+  try {
+    const { getCmsSitemapSlugs } = await import("./cms-pages.server");
+    return buildSitemapUrls(await getCmsSitemapSlugs());
+  } catch {
+    return buildSitemapUrls();
+  }
+}
+
+export async function sitemapXml(): Promise<string> {
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${(
+    await sitemapUrls()
+  )
     .map((url) => `\n  <url><loc>${escapeXml(url)}</loc></url>`)
     .join("")}\n</urlset>\n`;
 }

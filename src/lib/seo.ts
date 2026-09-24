@@ -4,7 +4,7 @@ export function pageHead(
   title: string,
   description: string,
   pathname: string,
-  options?: { noindex?: boolean },
+  options?: { noindex?: boolean; robots?: "index,follow" | "noindex,follow" },
 ) {
   const canonicalUrl = new URL(pathname, SITE.url).toString();
   const fullTitle = `${title} — Mikuva`;
@@ -12,14 +12,18 @@ export function pageHead(
   return {
     meta: [
       { title: fullTitle },
-    { name: "description", content: description },
+      { name: "description", content: description },
       { property: "og:title", content: fullTitle },
-    { property: "og:description", content: description },
-    { property: "og:type", content: "website" },
+      { property: "og:description", content: description },
+      { property: "og:type", content: "website" },
       { property: "og:url", content: canonicalUrl },
       { name: "twitter:title", content: fullTitle },
       { name: "twitter:description", content: description },
-      ...(options?.noindex ? [{ name: "robots", content: "noindex,nofollow" }] : []),
+      ...(options?.robots
+        ? [{ name: "robots", content: options.robots }]
+        : options?.noindex
+          ? [{ name: "robots", content: "noindex,nofollow" }]
+          : []),
     ],
     links: [{ rel: "canonical", href: canonicalUrl }],
   };
