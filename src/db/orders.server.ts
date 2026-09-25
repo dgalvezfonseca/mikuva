@@ -6,6 +6,7 @@ import { getDatabase } from "./index.server";
 import { createOrderInputSchema, orderFolioSchema, orderIdSchema } from "./order-input";
 import {
   customers,
+  categories,
   orderFolioCounters,
   orderItems,
   orders,
@@ -84,7 +85,14 @@ export async function createOrder(input: unknown) {
             currency: products.currency,
           })
           .from(products)
-          .where(and(eq(products.id, item.productId), eq(products.isActive, true)))
+          .innerJoin(categories, eq(products.categoryId, categories.id))
+          .where(
+            and(
+              eq(products.id, item.productId),
+              eq(products.isActive, true),
+              eq(categories.isActive, true),
+            ),
+          )
           .limit(1);
 
         if (!product) {

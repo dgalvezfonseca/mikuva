@@ -6,7 +6,7 @@ import { checkoutIntentSchema } from "@/lib/checkout-input";
 
 import { getDatabase } from "./index.server";
 import { createOrder } from "./orders.server";
-import { products, productVariants } from "./schema";
+import { categories, products, productVariants } from "./schema";
 
 export async function createOrderFromCheckoutIntent(input: unknown) {
   const parsed = checkoutIntentSchema.parse(input);
@@ -17,7 +17,14 @@ export async function createOrderFromCheckoutIntent(input: unknown) {
     const [product] = await db
       .select({ id: products.id })
       .from(products)
-      .where(and(eq(products.slug, item.productSlug), eq(products.isActive, true)))
+      .innerJoin(categories, eq(products.categoryId, categories.id))
+      .where(
+        and(
+          eq(products.slug, item.productSlug),
+          eq(products.isActive, true),
+          eq(categories.isActive, true),
+        ),
+      )
       .limit(1);
 
     if (!product) throw new Error(`Active product ${item.productSlug} was not found.`);

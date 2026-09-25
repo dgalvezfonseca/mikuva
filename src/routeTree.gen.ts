@@ -31,6 +31,7 @@ import { Route as PagoExitosoRouteImport } from './routes/pago.exitoso'
 import { Route as PagoPendienteRouteImport } from './routes/pago.pendiente'
 import { Route as ProductoSlugRouteImport } from './routes/producto.$slug'
 import { Route as ApiDirectusAssetsAssetIdRouteImport } from './routes/api.directus-assets.$assetId'
+import { Route as ApiInternalDirectusCatalogSyncRouteImport } from './routes/api.internal.directus-catalog-sync'
 import { Route as ApiWebhooksMercadopagoRouteImport } from './routes/api.webhooks.mercadopago'
 
 const IndexRoute = IndexRouteImport.update({
@@ -144,6 +145,12 @@ const ApiDirectusAssetsAssetIdRoute =
     path: '/api/directus-assets/$assetId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiInternalDirectusCatalogSyncRoute =
+  ApiInternalDirectusCatalogSyncRouteImport.update({
+    id: '/api/internal/directus-catalog-sync',
+    path: '/api/internal/directus-catalog-sync',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiWebhooksMercadopagoRoute = ApiWebhooksMercadopagoRouteImport.update({
   id: '/api/webhooks/mercadopago',
   path: '/api/webhooks/mercadopago',
@@ -173,6 +180,7 @@ export interface FileRoutesByFullPath {
   '/pago/pendiente': typeof PagoPendienteRoute
   '/producto/$slug': typeof ProductoSlugRoute
   '/api/directus-assets/$assetId': typeof ApiDirectusAssetsAssetIdRoute
+  '/api/internal/directus-catalog-sync': typeof ApiInternalDirectusCatalogSyncRoute
   '/api/webhooks/mercadopago': typeof ApiWebhooksMercadopagoRoute
 }
 export interface FileRoutesByTo {
@@ -198,6 +206,7 @@ export interface FileRoutesByTo {
   '/pago/pendiente': typeof PagoPendienteRoute
   '/producto/$slug': typeof ProductoSlugRoute
   '/api/directus-assets/$assetId': typeof ApiDirectusAssetsAssetIdRoute
+  '/api/internal/directus-catalog-sync': typeof ApiInternalDirectusCatalogSyncRoute
   '/api/webhooks/mercadopago': typeof ApiWebhooksMercadopagoRoute
 }
 export interface FileRoutesById {
@@ -224,6 +233,7 @@ export interface FileRoutesById {
   '/pago/pendiente': typeof PagoPendienteRoute
   '/producto/$slug': typeof ProductoSlugRoute
   '/api/directus-assets/$assetId': typeof ApiDirectusAssetsAssetIdRoute
+  '/api/internal/directus-catalog-sync': typeof ApiInternalDirectusCatalogSyncRoute
   '/api/webhooks/mercadopago': typeof ApiWebhooksMercadopagoRoute
 }
 export interface FileRouteTypes {
@@ -251,6 +261,7 @@ export interface FileRouteTypes {
     | '/pago/pendiente'
     | '/producto/$slug'
     | '/api/directus-assets/$assetId'
+    | '/api/internal/directus-catalog-sync'
     | '/api/webhooks/mercadopago'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -276,6 +287,7 @@ export interface FileRouteTypes {
     | '/pago/pendiente'
     | '/producto/$slug'
     | '/api/directus-assets/$assetId'
+    | '/api/internal/directus-catalog-sync'
     | '/api/webhooks/mercadopago'
   id:
     | '__root__'
@@ -301,6 +313,7 @@ export interface FileRouteTypes {
     | '/pago/pendiente'
     | '/producto/$slug'
     | '/api/directus-assets/$assetId'
+    | '/api/internal/directus-catalog-sync'
     | '/api/webhooks/mercadopago'
   fileRoutesById: FileRoutesById
 }
@@ -327,6 +340,7 @@ export interface RootRouteChildren {
   PagoPendienteRoute: typeof PagoPendienteRoute
   ProductoSlugRoute: typeof ProductoSlugRoute
   ApiDirectusAssetsAssetIdRoute: typeof ApiDirectusAssetsAssetIdRoute
+  ApiInternalDirectusCatalogSyncRoute: typeof ApiInternalDirectusCatalogSyncRoute
   ApiWebhooksMercadopagoRoute: typeof ApiWebhooksMercadopagoRoute
 }
 
@@ -486,6 +500,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiDirectusAssetsAssetIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/internal/directus-catalog-sync': {
+      id: '/api/internal/directus-catalog-sync'
+      path: '/api/internal/directus-catalog-sync'
+      fullPath: '/api/internal/directus-catalog-sync'
+      preLoaderRoute: typeof ApiInternalDirectusCatalogSyncRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/webhooks/mercadopago': {
       id: '/api/webhooks/mercadopago'
       path: '/api/webhooks/mercadopago'
@@ -519,6 +540,7 @@ const rootRouteChildren: RootRouteChildren = {
   PagoPendienteRoute: PagoPendienteRoute,
   ProductoSlugRoute: ProductoSlugRoute,
   ApiDirectusAssetsAssetIdRoute: ApiDirectusAssetsAssetIdRoute,
+  ApiInternalDirectusCatalogSyncRoute: ApiInternalDirectusCatalogSyncRoute,
   ApiWebhooksMercadopagoRoute: ApiWebhooksMercadopagoRoute,
 }
 export const routeTree = rootRouteImport

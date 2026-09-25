@@ -30,6 +30,7 @@ export type ProductDetail = {
   metaTitle: string;
   metaDescription: string;
   ogImageUrl: string | null;
+  variants: Array<{ code: string; name: string; price: number | null }>;
 };
 
 export type TransactionalProductConfig = {
@@ -132,6 +133,9 @@ export function toProductDetail(catalog: DirectusCatalog, slug: string): Product
     metaTitle: product.metaTitle,
     metaDescription: product.metaDescription,
     ogImageUrl: product.ogImage ? assetUrl(product.ogImage.assetId) : null,
+    variants: product.variants
+      .filter((variant) => variant.code && variant.name)
+      .map((variant) => ({ code: variant.code, name: variant.name, price: variant.price })),
   };
 }
 

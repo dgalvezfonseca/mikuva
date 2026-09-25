@@ -78,6 +78,7 @@ export const categories = mysqlTable(
   "categories",
   {
     id: int("id", { unsigned: true }).autoincrement().primaryKey(),
+    directusId: varchar("directus_id", { length: 191 }),
     slug: varchar("slug", { length: 128 }).notNull(),
     name: varchar("name", { length: 160 }).notNull(),
     description: text("description").notNull(),
@@ -88,6 +89,7 @@ export const categories = mysqlTable(
   },
   (table) => [
     uniqueIndex("categories_slug_unique").on(table.slug),
+    uniqueIndex("categories_directus_id_unique").on(table.directusId),
     index("categories_active_sort_idx").on(table.isActive, table.sortOrder),
   ],
 );
@@ -96,6 +98,7 @@ export const products = mysqlTable(
   "products",
   {
     id: int("id", { unsigned: true }).autoincrement().primaryKey(),
+    directusId: varchar("directus_id", { length: 191 }),
     categoryId: int("category_id", { unsigned: true })
       .notNull()
       .references(() => categories.id, { onDelete: "restrict", onUpdate: "cascade" }),
@@ -111,6 +114,7 @@ export const products = mysqlTable(
   },
   (table) => [
     uniqueIndex("products_slug_unique").on(table.slug),
+    uniqueIndex("products_directus_id_unique").on(table.directusId),
     index("products_category_active_idx").on(table.categoryId, table.isActive),
     check("products_base_price_nonnegative", sql`${table.basePrice} >= 0`),
   ],
@@ -120,6 +124,7 @@ export const productVariants = mysqlTable(
   "product_variants",
   {
     id: int("id", { unsigned: true }).autoincrement().primaryKey(),
+    directusId: varchar("directus_id", { length: 191 }),
     productId: int("product_id", { unsigned: true })
       .notNull()
       .references(() => products.id, { onDelete: "restrict", onUpdate: "cascade" }),
@@ -134,6 +139,7 @@ export const productVariants = mysqlTable(
   },
   (table) => [
     uniqueIndex("product_variants_code_unique").on(table.code),
+    uniqueIndex("product_variants_directus_id_unique").on(table.directusId),
     index("product_variants_product_active_sort_idx").on(
       table.productId,
       table.isActive,

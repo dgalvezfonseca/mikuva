@@ -135,6 +135,7 @@ describe("product detail", () => {
       metaTitle: "Título SEO",
       metaDescription: "Descripción SEO",
       ogImageUrl: "/api/directus-assets/og-asset",
+      variants: [],
     });
   });
 

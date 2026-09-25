@@ -3,6 +3,7 @@ import { Check, ChevronRight } from "lucide-react";
 
 import FAQAccordion from "@/components/faq/FAQAccordion";
 import FilmConfigurator from "@/components/products/FilmConfigurator";
+import DirectusVariantConfigurator from "@/components/products/DirectusVariantConfigurator";
 import PhotoQuantityConfigurator from "@/components/products/PhotoQuantityConfigurator";
 import ProductGallery from "@/components/products/ProductGallery";
 import StoreProductCard from "@/components/products/StoreProductCard";
@@ -101,6 +102,15 @@ function ProductPage() {
                 <FilmConfigurator product={transactionalProduct} />
               ) : product.configurator === "quantity" && transactionalProduct?.tiers.length ? (
                 <PhotoQuantityConfigurator product={transactionalProduct} />
+              ) : product.variants.length ? (
+                <DirectusVariantConfigurator
+                  product={{
+                    slug: product.slug,
+                    name: product.name,
+                    image: product.mainImageUrl ?? "",
+                    variants: product.variants,
+                  }}
+                />
               ) : null}
             </div>
           </div>
